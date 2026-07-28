@@ -1,4 +1,5 @@
 venv/
 .venv/
 data/raw/
-data/raw/main
+data/raw/main_datasets/
+data/raw/main_data/
