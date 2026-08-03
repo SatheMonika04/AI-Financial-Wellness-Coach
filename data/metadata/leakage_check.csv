@@ -1,0 +1,15 @@
+Feature,Uses Future Data,Leakage Risk
+transaction_text,No,Safe
+amount,No,Safe
+amount_log,No,Safe
+amount_bucket,No,Safe
+payment_method,No,Safe
+transaction_type,No,Safe
+merchant,No,Safe
+day,No,Safe
+week,No,Safe
+month,No,Safe
+weekend,No,Safe
+month_end,No,Safe
+salary_week,No,Safe
+festival_season,No,Safe

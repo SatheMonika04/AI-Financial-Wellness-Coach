@@ -108,6 +108,37 @@ Expense Categorization Model
 - Used In: Forecasting
 
 ---
+
+merchant
+              \
+               \
+                transaction_text
+               /
+description
+
+
+amount
+      \
+       \
+        amount_log
+
+amount
+      \
+       \
+        amount_bucket
+
+
+transaction_date
+      │
+      ├── day
+      ├── week
+      ├── month
+      ├── weekend
+      ├── month_end
+      ├── salary_week
+      └── festival_season
+
+---
 # Categorical Features
 
 ## payment_method
@@ -180,4 +211,44 @@ Features:
 - merchant
 - amount
 - category
+
+---
+
+# Data Leakage Assessment
+
+## Leakage Policy
+
+A feature is considered safe if it can be computed using only information available at the time of the transaction.
+
+---
+
+## Safe Features
+
+- transaction_text
+- amount
+- amount_log
+- amount_bucket
+- payment_method
+- transaction_type
+- merchant
+- day
+- week
+- month
+- weekend
+- month_end
+- salary_week
+- festival_season
+
+---
+
+## Excluded Features
+
+- merchant_frequency
+- average_merchant_spending
+- rolling_average
+- future_balance
+- future_category
+
+Reason:
+These features require information from future transactions or the complete dataset and would introduce data leakage into model training.
 
