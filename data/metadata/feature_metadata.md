@@ -107,3 +107,77 @@ Expense Categorization Model
 - Transformation: Rule-based festival period indicator
 - Used In: Forecasting
 
+---
+# Categorical Features
+
+## payment_method
+
+Type: Categorical
+
+Unique Values:
+- UPI
+- Auto Debit
+- Debit Card
+- Net Banking
+- Credit Card
+- NEFT
+- Cash Withdrawal
+- IMPS
+
+Encoding Strategy:
+OneHotEncoder (inside sklearn Pipeline)
+
+---
+
+## transaction_type
+
+Type: Categorical
+
+Unique Values:
+- Debit
+- Credit
+
+Encoding Strategy:
+OneHotEncoder (inside sklearn Pipeline)
+
+---
+
+# Model Feature Sets
+
+## Expense Classification
+
+Features:
+- transaction_text
+- amount
+- amount_log
+- amount_bucket
+- payment_method
+- transaction_type
+
+Target:
+- category
+
+---
+
+## Spending Forecasting
+
+Features:
+- transaction_date
+- amount
+- day
+- week
+- month
+- weekend
+- month_end
+- salary_week
+- festival_season
+
+---
+
+## Merchant Analytics
+
+Features:
+- merchant
+- amount
+- category
+
