@@ -67,3 +67,43 @@ Expense Categorization Model
 
 **Used In:**
 - Expense Categorization
+
+---
+
+## Date Features
+
+### day
+- Source: transaction_date
+- Transformation: Extracted day of month
+- Used In: Forecasting
+
+### week
+- Source: transaction_date
+- Transformation: ISO calendar week
+- Used In: Forecasting
+
+### month
+- Source: transaction_date
+- Transformation: Month number
+- Used In: Forecasting
+
+### weekend
+- Source: transaction_date
+- Transformation: Saturday/Sunday flag
+- Used In: Forecasting
+
+### month_end
+- Source: transaction_date
+- Transformation: Month-end flag
+- Used In: Forecasting
+
+### salary_week
+- Source: transaction_date
+- Transformation: Rule-based salary period indicator
+- Used In: Forecasting
+
+### festival_season
+- Source: transaction_date
+- Transformation: Rule-based festival period indicator
+- Used In: Forecasting
+
