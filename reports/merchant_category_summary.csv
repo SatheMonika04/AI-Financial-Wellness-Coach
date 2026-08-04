@@ -1,0 +1,103 @@
+category,merchant,Transaction_Count,Total_Spending,Average_Transaction
+Bills,Adani Electricity,98,594778.24,6069.17
+Bills,Airtel,175,619846.61,3541.98
+Bills,BEST,108,529828.59,4905.82
+Bills,BSNL,111,457372.17,4120.47
+Bills,Bharat Gas,100,267541.77,2675.42
+Bills,Credit Card Bill Payment,693,2333031.37,3366.57
+Bills,EMI Home Loan,30,455598.92,15186.63
+Bills,EMI Personal Loan,29,419127.47,14452.67
+Bills,HP Gas,84,442808.95,5271.54
+Bills,Income Tax Payment,36,676480.16,18791.12
+Bills,Indane Gas,74,355492.69,4803.96
+Bills,Jio,137,587892.38,4291.19
+Bills,Jio Fiber,113,582560.01,5155.4
+Bills,Municipal Water Department,155,451346.16,2911.91
+Bills,Tata Power,116,488830.97,4214.06
+Entertainment,Amazon Prime,20,14625.62,731.28
+Entertainment,BookMyShow,104,46706.48,449.1
+Entertainment,Disney+ Hotstar,9,10789.78,1198.86
+Entertainment,Netflix,34,25953.49,763.34
+Food,Barbeque Nation,50,33637.74,672.75
+Food,Burger King,92,50851.73,552.74
+Food,Cafe Coffee Day,117,84501.17,722.23
+Food,Chaayos,68,54193.5,796.96
+Food,Domino's India,98,72747.61,742.32
+Food,EatClub,81,59404.81,733.39
+Food,Faasos,80,63656.89,795.71
+Food,KFC,26,41716.37,1604.48
+Food,KFC India,37,15538.07,419.95
+Food,Local Wine & Beer Shop,66,71870.06,1088.94
+Food,McDonald's India,106,69670.59,657.27
+Food,Social,54,62772.9,1162.46
+Food,Starbucks India,70,60776.02,868.23
+Food,Swiggy,106,75174.89,709.2
+Food,The Beer Cafe,48,69559.73,1449.16
+Food,Third Wave Coffee,84,71505.15,851.25
+Food,Toit Brewpub,28,30184.6,1078.02
+Food,Zomato,117,82043.76,701.23
+Fuel,BPCL,118,347118.02,2941.68
+Fuel,HPCL,143,438728.28,3068.03
+Fuel,Indian Oil,162,469953.76,2900.95
+Groceries,BigBasket,146,173593.78,1189.0
+Groceries,Blinkit,140,158259.34,1130.42
+Groceries,DMart,178,224684.27,1262.27
+Groceries,Nature's Basket,143,194950.53,1363.29
+Groceries,Reliance Fresh,167,240816.99,1442.02
+Groceries,Zepto,138,194238.24,1407.52
+Insurance,Bajaj Allianz,44,696711.29,15834.35
+Insurance,HDFC Ergo,42,555405.11,13223.93
+Insurance,ICICI Lombard,39,596109.3,15284.85
+Insurance,LIC,27,323050.08,11964.82
+Investment,HDFC Mutual Fund,8,172292.1,21536.51
+Investment,ICICI Prudential MF,12,352103.68,29341.97
+Investment,Mutual Fund SIP,11,221316.02,20119.64
+Investment,SBI Mutual Fund,5,73389.34,14677.87
+Miscellaneous,Ace Hardware India,59,87825.63,1488.57
+Miscellaneous,Apollo Pharmacy,17,39167.18,2303.95
+Miscellaneous,Home Depot India,49,107484.01,2193.55
+Miscellaneous,IRCTC,17,18017.71,1059.87
+Miscellaneous,Lakme Salon,24,39169.91,1632.08
+Miscellaneous,Local Barbershop,20,40454.11,2022.71
+Miscellaneous,Local Hardware Store,46,82335.32,1789.9
+Miscellaneous,Naturals Salon,33,58324.1,1767.4
+Miscellaneous,Ola,18,22716.23,1262.01
+Miscellaneous,PharmEasy,22,52525.56,2387.53
+Miscellaneous,Rapido,18,33435.91,1857.55
+Miscellaneous,Tata 1mg,14,34273.03,2448.07
+Miscellaneous,Uber,21,20584.58,980.22
+Other,ATM,17,47423.5,2789.62
+Other,Bakery,34,21364.76,628.38
+Other,Flower Shop,34,15905.64,467.81
+Other,Fruit Vendor,19,11098.69,584.14
+Other,General Store,24,27310.84,1137.95
+Other,Kirana Shop,20,29933.51,1496.68
+Other,Laundry,22,29267.33,1330.33
+Other,Local Services,34,41662.66,1225.37
+Other,Local Store,19,24627.63,1296.19
+Other,Misc Vendor,30,38722.0,1290.73
+Other,Mobile Repair,30,38092.65,1269.76
+Other,Pet Shop,8,7540.32,942.54
+Other,Stationery Shop,9,16142.33,1793.59
+Other,Street Food Vendor,9,1845.31,205.03
+Other,Street Vendor,27,12190.87,451.51
+Other,Tailor,23,31845.23,1384.58
+Other,Tea Stall,21,1928.77,91.85
+Other,Unknown Merchant,28,31610.5,1128.95
+Other,Vegetable Market,27,12260.16,454.08
+Rent,House Rent Payment,165,4389360.17,26602.18
+Salary,Employer Salary Credit,163,11146133.0,68381.18
+Salary,Interest Credit,10,9186.21,918.62
+Shopping,Ajio,70,367572.87,5251.04
+Shopping,Amazon India,123,533984.01,4341.33
+Shopping,Flipkart,108,445105.03,4121.34
+Shopping,Meesho,68,284656.32,4186.12
+Shopping,Myntra,115,352573.07,3065.85
+Shopping,Nykaa,66,365715.2,5541.14
+Subscription,Airtel Digital TV,18,10534.71,585.26
+Subscription,Amazon Prime,19,7973.12,419.64
+Subscription,Dish TV,29,15277.94,526.83
+Subscription,Disney+ Hotstar,24,10801.44,450.06
+Subscription,Netflix,29,10707.76,369.23
+Subscription,Spotify,96,25995.34,270.78
+Subscription,Tata Play,27,11931.55,441.91
