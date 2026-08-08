@@ -1,0 +1,1 @@
+Data leakage check: Exact duplicate transactions were removed before dataset splitting. After stratified train/validation/test splitting, no complete transaction records were shared between any two datasets. Repeated transaction-text patterns remain across splits because they represent recurring transaction patterns rather than exact duplicate records.
