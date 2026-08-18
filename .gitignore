@@ -3,3 +3,5 @@ venv/
 data/raw/
 data/raw/main_datasets/
 data/raw/main_data/
+.env
+env
