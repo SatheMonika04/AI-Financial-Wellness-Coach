@@ -346,6 +346,7 @@ div[data-testid="stTextInput"] input {
 div[data-testid="stTextInput"] input:focus { border-color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(16,185,129,.12) !important; }
 div[data-testid="stTextInput"] label { font-size: 13px !important; font-weight: 700 !important; color: var(--navy) !important; }
 .stButton > button {
+  margin-top: 16px !important;
   width: 100%; border-radius: 999px !important; border: none !important; font-weight: 700 !important;
   padding: 12px 22px !important; background: linear-gradient(120deg, var(--navy), var(--teal-deep)) !important;
   color: #fff !important; transition: all .2s ease !important;

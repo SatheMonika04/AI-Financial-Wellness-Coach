@@ -1,4 +1,3 @@
-"""Signup page. Hook the submit handler up to your existing auth service."""
 
 import streamlit as st
 
@@ -7,6 +6,9 @@ from frontend.components.navbar import render_navbar
 from frontend.utils.ui import goto, html
 from src.auth.auth_service import signup
 
+st.page_config(page_title="MoneyMind AI - Signup", 
+               page_icon="mini_logo.png", 
+               layout="centered", initial_sidebar_state="collapsed")
 
 def render() -> None:
     render_navbar()

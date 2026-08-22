@@ -7,7 +7,9 @@ from frontend.components.navbar import render_navbar
 from src.auth.auth_service import login
 from frontend.utils.ui import goto, html
 
-
+st.page_config(page_title="MoneyMind AI - Login", 
+               page_icon="mini_logo.png", 
+               layout="centered", initial_sidebar_state="collapsed")
 def render() -> None:
     render_navbar()
     html(
