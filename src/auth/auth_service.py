@@ -18,6 +18,7 @@ def signup(
         email , 
         password
 ):
+    email = email.strip().lower()
     
     existing_user = get_user_by_email(email)
 
@@ -44,6 +45,7 @@ def signup(
 #-----------------------------------------------------------
 
 def login(email,password):
+    email = email.strip().lower()
 
     user = get_user_by_email(email)
 
