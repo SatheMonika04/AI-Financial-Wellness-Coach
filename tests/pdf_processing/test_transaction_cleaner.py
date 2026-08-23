@@ -20,7 +20,7 @@ def test_dataframe_schema_and_types():
     assert not invalid
     assert list(frame.columns) == ["transaction_date", "description", "transaction", "amount"]
     assert pd.api.types.is_numeric_dtype(frame["amount"])
-    assert frame.loc[0, "amount"] == -450.0
+    assert frame.loc[0, "amount"] == 450.0
 
 
 def test_missing_balances_use_credit_and_debit_running_total():
@@ -30,4 +30,4 @@ def test_missing_balances_use_credit_and_debit_running_total():
     ])
 
     assert not invalid
-    assert frame["amount"].tolist() == [500.0, -125.0]
+    assert frame["amount"].tolist() == [500.0, 125.0]

@@ -6,8 +6,8 @@ from src.pdf_processing.pipeline import process_bank_statement
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-PDF_PATH = PROJECT_ROOT / "Test Assets" / "jyoti_statement.pdf"
-OUTPUT_PATH = PROJECT_ROOT / "data" / "output" / "jyoti_phonepe_transactions.csv"
+PDF_PATH = PROJECT_ROOT / "statement1.pdf"
+OUTPUT_PATH = PROJECT_ROOT / "data" / "output" / "phonepe_transactions.csv"
 
 
 def test_phonepe_statement_is_parsed():

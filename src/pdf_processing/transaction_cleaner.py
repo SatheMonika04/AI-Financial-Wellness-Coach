@@ -50,9 +50,7 @@ def clean_transaction(row: dict[str, Any]) -> dict[str, Any]:
         cleaned["transaction"] = "Credit"
     else:
         cleaned["transaction"] = None
-    if cleaned["amount"] is not None and cleaned["transaction"] == "Debit":
-        cleaned["amount"] = -abs(cleaned["amount"])
-    elif cleaned["amount"] is not None and cleaned["transaction"] == "Credit":
+    if cleaned["amount"] is not None:
         cleaned["amount"] = abs(cleaned["amount"])
     return cleaned
 
