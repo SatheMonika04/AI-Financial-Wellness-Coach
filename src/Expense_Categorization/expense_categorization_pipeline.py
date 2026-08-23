@@ -1,9 +1,4 @@
-"""Application-ready expense categorization pipeline.
 
-The classifier artifact was trained on transaction_text, amount, amount_log,
-payment_method, and transaction_type. This module adapts common bank CSV
-schemas to that contract and writes the original rows with predictions.
-"""
 
 from __future__ import annotations
 
@@ -19,6 +14,9 @@ import pandas as pd
 
 
 MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "expense_classifier_pipeline.pkl"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_INPUT_CSV = PROJECT_ROOT / "Test Assets" / "PhonePe_Statement_Aug2025_Aug2026.csv"
+DEFAULT_OUTPUT_CSV = PROJECT_ROOT / "data" / "output" / "PhonePe_Statement_Aug2025_Aug2026_categorized.csv"
 OUTPUT_COLUMNS = ("transaction_text", "amount", "payment_method", "transaction_type")
 ALIASES = {
     "transaction_text": (
@@ -168,8 +166,8 @@ def categorize_csv(input_path: str | Path, output_path: str | Path | None = None
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Categorize transactions from a CSV file.")
-    parser.add_argument("input_csv", type=Path)
-    parser.add_argument("-o", "--output", type=Path, help="Output CSV path.")
+    parser.add_argument("input_csv", type=Path, nargs="?", default=DEFAULT_INPUT_CSV, help="Input transaction CSV path.")
+    parser.add_argument("output", type=Path, nargs="?", default=DEFAULT_OUTPUT_CSV, help="Output CSV path.")
     parser.add_argument("--model", type=Path, default=MODEL_PATH)
     args = parser.parse_args()
     output = args.output or args.input_csv.with_name(f"{args.input_csv.stem}_categorized.csv")
