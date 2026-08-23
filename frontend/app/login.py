@@ -1,4 +1,3 @@
-"""Login page. Hook the submit handler up to your existing auth service."""
 
 import streamlit as st
 
