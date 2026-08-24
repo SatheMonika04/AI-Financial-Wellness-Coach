@@ -12,6 +12,7 @@ def render_navbar() -> None:
           </a>
           <nav class="mm-nav__links">
             <a href="?page=landing" target="_self">Home</a>
+            <a href="?page=upload" target="_self">Upload</a>
             <a href="#features">Features</a>
             <a href="#how-it-works">How It Works</a>
             <a href="#ai-coach">AI Coach</a>

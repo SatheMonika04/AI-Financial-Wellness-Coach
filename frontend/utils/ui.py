@@ -79,7 +79,7 @@ def goto(page: str) -> None:
 
 def sync_page_from_query() -> str:
     """Keep session state in sync with ?page=... links used by the HTML navbar/buttons."""
-    valid = {"landing", "login", "signup", "dashboard"}
+    valid = {"landing", "login", "signup", "dashboard", "upload"}
     st.session_state.setdefault("page", "landing")
     requested = st.query_params.get("page")
     if requested in valid and requested != st.session_state["page"]:

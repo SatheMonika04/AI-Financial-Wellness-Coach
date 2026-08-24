@@ -17,6 +17,8 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from src.pdf_processing.pipeline import process_bank_statement_to_dataframe
+
 
 MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "expense_classifier_pipeline_v3.pkl"
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -206,7 +208,6 @@ def main() -> None:
     output = args.output or args.input_csv.with_name(f"{args.input_csv.stem}_categorized.csv")
     categorize_csv(args.input_csv, output, args.model)
     print(f"Saved categorized transactions to {output}")
-
 
 if __name__ == "__main__":
     main()
