@@ -1,0 +1,215 @@
+transaction_date,description,transaction,amount,predicted_category,category_confidence
+2026-08-22,Paid to Pravin Manik Sawant,Debit,120.0,Personal Transfer,0.9598412685874752
+2026-08-22,Received from Magdum,Credit,3800.0,Personal Transfer,0.9728909514816305
+2026-08-21,Paid to KHALIL GULAMRASUL SHAIKH,Debit,150.0,Personal Transfer,0.9603295691534609
+2026-08-20,Paid to Shivprasad Kanhare,Debit,1000.0,Personal Transfer,0.9625037684943519
+2026-08-20,Paid to Prathamesh Ambulge,Debit,50.0,Personal Transfer,0.9572374922436481
+2026-08-19,Paid to MARTAND TARRI POHE AND DA,Debit,120.0,Personal Transfer,0.9598412685874752
+2026-08-18,Received from Shivprasad Kanhare,Credit,600.0,Personal Transfer,0.9645562560116799
+2026-08-13,Paid to LATUR CUSHION WORKS,Debit,350.0,Personal Transfer,0.9616639840770288
+2026-08-12,Paid to priyanka general stores,Debit,30.0,Personal Transfer,0.9420299637637207
+2026-08-12,Received from Magdum,Credit,1000.0,Personal Transfer,0.9675882714417151
+2026-08-09,Paid to Rafik Rajjak Attar,Debit,50.0,Personal Transfer,0.9572374922436481
+2026-08-05,Paid to JS MULTI SERVICES,Debit,60.0,Personal Transfer,0.9177640561084566
+2026-08-04,Paid to JADHAV BANDHU TRADERS,Debit,45.0,Personal Transfer,0.9658429363824753
+2026-08-02,Paid to Pravin Bhai Atta Girni,Debit,100.0,Personal Transfer,0.9593930017941257
+2026-07-31,Paid to KAYAMKHANI PETROLEUM,Debit,220.0,Personal Transfer,0.961026430200278
+2026-07-31,Received from Magdum,Credit,1200.0,Personal Transfer,0.9685465315666594
+2026-07-30,Paid to Wasim kirana shop,Debit,10.0,Other,0.624840992575075
+2026-07-29,Paid to Aaisaheb medical store,Debit,58.0,Personal Transfer,0.95530155851398
+2026-07-29,Paid to Samarth aqua,Debit,15.0,Personal Transfer,0.9515372815400833
+2026-07-25,Paid to Aaisaheb medical store,Debit,195.0,Personal Transfer,0.9589250336991849
+2026-07-23,Paid to Anna Fast food & Idli Centre,Debit,30.0,Personal Transfer,0.9486566661795758
+2026-07-23,Received from Prathamesh Ambulge,Credit,30.0,Personal Transfer,0.9352105499885557
+2026-07-23,Received from Parth Patne,Credit,10.0,Personal Transfer,0.9188089861834002
+2026-07-23,Paid to Samarth aqua,Debit,15.0,Personal Transfer,0.9515372815400833
+2026-07-22,Paid to Shivprasad Kanhare,Debit,499.0,Personal Transfer,0.962025134804627
+2026-07-22,Paid to Shivprasad Kanhare,Debit,1.0,Personal Transfer,0.9325877518653053
+2026-07-19,Paid to PARADISETRADERS,Debit,260.0,Personal Transfer,0.9612798704580116
+2026-07-18,Paid to Prathamesh Ambulge,Debit,350.0,Personal Transfer,0.9616639840770288
+2026-07-18,Paid to Anna Fast food & Idli Centre,Debit,100.0,Personal Transfer,0.954023553789361
+2026-07-18,Paid to Aditya Karkare Cocsit,Debit,60.0,Personal Transfer,0.957878001138223
+2026-07-17,Paid to SAYYED PETROLEUM,Debit,150.0,Personal Transfer,0.9603295691534609
+2026-07-16,Received from Parth Patne,Credit,25.0,Personal Transfer,0.932693497954797
+2026-07-16,Paid to ALIMUN USMAN FAKIR,Debit,50.0,Personal Transfer,0.9572374922436481
+2026-07-15,Paid to MAHAVEER KIRANA,Debit,60.0,Personal Transfer,0.9514780809400144
+2026-07-15,Paid to PARADISETRADERS,Debit,260.0,Personal Transfer,0.9612798704580116
+2026-07-13,Paid to KALIM WAHAB SAYYED,Debit,10.0,Personal Transfer,0.9490310474368492
+2026-07-13,Paid to ARBAJ ISMAIL SHAIKH,Debit,35.0,Personal Transfer,0.95582092188089
+2026-07-13,Paid to Bhagwan Gopalrao Kamble,Debit,40.0,Personal Transfer,0.9638171660527131
+2026-07-11,Paid to Samarth aqua,Debit,15.0,Personal Transfer,0.9515372815400833
+2026-07-09,Paid to Aaisaheb medical store,Debit,30.0,Personal Transfer,0.9525050499271993
+2026-07-09,Paid to Ayasha,Debit,20.0,Personal Transfer,0.9531391207026495
+2026-07-08,Paid to Maniyar Ajroddin Moin,Debit,60.0,Personal Transfer,0.957878001138223
+2026-07-07,Paid to Mr GOVINDA VASANTRA,Debit,35.0,Personal Transfer,0.95582092188089
+2026-07-07,Paid to Maniyar Ajroddin Moin,Debit,57.0,Personal Transfer,0.9577033451943274
+2026-07-07,Received from Shaikh Samir Rajjak,Credit,57.0,Personal Transfer,0.9433672602811308
+2026-07-07,Paid to SHANMUKHA V C,Debit,70.0,Personal Transfer,0.9583774180949352
+2026-07-07,Received from Shaikh Samir Rajjak,Credit,50.0,Personal Transfer,0.9417914860109252
+2026-07-07,Paid to HOTEL SIDHI,Debit,165.0,Personal Transfer,0.9605190131248832
+2026-07-05,Paid to KAYAMKHANI PETROLEUM,Debit,150.0,Personal Transfer,0.9603295691534609
+2026-07-01,Paid to MARVEL MEDICAL,Debit,1332.0,Personal Transfer,0.9626418177467638
+2026-07-01,Paid to MARVEL SKIN HAIR AN,Debit,930.0,Personal Transfer,0.9624645446369781
+2026-07-01,Received from Magdum,Credit,2000.0,Personal Transfer,0.9708677584586075
+2026-07-01,Paid to MARVEL SKIN HAIR AN,Debit,300.0,Personal Transfer,0.9614749395479074
+2026-06-30,Received from Minaj Di,Credit,3000.0,Personal Transfer,0.9722810728541956
+2026-06-26,Paid to SHREE TODKAR MEDICA,Debit,10.0,Personal Transfer,0.9490310474368492
+2026-06-22,Paid to Pravin Manik Sawant,Debit,80.0,Personal Transfer,0.9587799547138453
+2026-06-21,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-06-21,Paid to MAHARASHTRA CHICKEN CENTAR,Debit,240.0,Personal Transfer,0.9611620141586057
+2026-06-19,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-06-19,Paid to Raza,Debit,40.0,Personal Transfer,0.9563772101566818
+2026-06-17,Paid to Samarth aqua,Debit,15.0,Personal Transfer,0.9515372815400833
+2026-06-15,Paid to Aaisaheb medical store,Debit,80.0,Personal Transfer,0.9564347662921616
+2026-06-14,Paid to Samarth aqua,Debit,15.0,Personal Transfer,0.9515372815400833
+2026-06-12,Paid to SAJAN MASTAN SHEKH,Debit,20.0,Personal Transfer,0.9531391207026495
+2026-06-12,Paid to Swapnil Pavan Bachate,Debit,20.0,Personal Transfer,0.9531391207026495
+2026-06-11,Received from Magdum,Credit,300.0,Personal Transfer,0.9596102137537725
+2026-06-11,Paid to ICON KIDNEY CARE LLP,Debit,370.0,Personal Transfer,0.9617270918400758
+2026-06-11,Paid to MATOSHRI BHOJNALY,Debit,35.0,Personal Transfer,0.95582092188089
+2026-06-10,Received from Shubham vilas narsanne,Credit,550.0,Personal Transfer,0.963988764620745
+2026-06-08,Paid to SHUBHAM VILAS NARSANNE,Debit,600.0,Personal Transfer,0.9621776309647535
+2026-06-07,Paid to Neha Provision And General Stores Latur,Debit,100.0,Personal Transfer,0.9546183407853791
+2026-06-07,Paid to ICON KIDNEY CARE LLP,Debit,390.0,Personal Transfer,0.9617845300248996
+2026-06-07,Received from Magdum,Credit,400.0,Personal Transfer,0.9617825043871638
+2026-06-06,Paid to Pravin Manik Sawant,Debit,30.0,Personal Transfer,0.9551391571514071
+2026-06-06,Paid to Samarth aqua,Debit,15.0,Personal Transfer,0.9515372815400833
+2026-06-03,Paid to Samarth aqua,Debit,15.0,Personal Transfer,0.9515372815400833
+2026-06-01,Paid to ICON KIDNEY CARE LLP,Debit,789.0,Personal Transfer,0.9623677835549932
+2026-06-01,Received from Magdum,Credit,800.0,Personal Transfer,0.9663265336913344
+2026-05-31,Paid to Neha Provision And General Stores Latur,Debit,85.0,Personal Transfer,0.9538087582131735
+2026-05-31,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-05-30,Paid to PIZZA HUT,Debit,1032.0,Personal Transfer,0.9625201948594205
+2026-05-30,Received from Magdum,Credit,1000.0,Personal Transfer,0.9675882714417151
+2026-05-30,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-05-29,Paid to Aaisaheb medical store,Debit,200.0,Personal Transfer,0.9589842626669237
+2026-05-29,Paid to MAHAVEER KIRANA,Debit,230.0,Personal Transfer,0.955947310810438
+2026-05-28,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-05-28,Received from Ajit Vyankat Pawar,Credit,15.0,Personal Transfer,0.9081364671260556
+2026-05-28,Paid to Surya dakshin dosa plaza,Debit,140.0,Personal Transfer,0.9601854234266027
+2026-05-26,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-05-26,Paid to DINESH GULABCHAND PARDESHI,Debit,747.0,Personal Transfer,0.9623328981707188
+2026-05-24,Paid to DINESH GULABCHAND PARDESHI,Debit,1140.0,Personal Transfer,0.9625699124697452
+2026-05-24,Received from Magdum,Credit,2000.0,Personal Transfer,0.9708677584586075
+2026-05-24,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-05-22,Paid to Neha Provision And General Stores Latur,Debit,25.0,Personal Transfer,0.9461564493008057
+2026-05-22,Paid to MAHAVEER KIRANA,Debit,50.0,Personal Transfer,0.9506515125511484
+2026-05-22,Received from Magdum,Credit,1500.0,Personal Transfer,0.9696283780543146
+2026-05-22,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-05-22,Paid to TULJAI IDLI GRUH AMBEGOGAI ROAD,Debit,265.0,Personal Transfer,0.9613069749584281
+2026-05-21,Paid to ICON KIDNEY CARE LLP,Debit,393.0,Personal Transfer,0.9617927046531092
+2026-05-17,Paid to ICON KIDNEY CARE LLP,Debit,300.0,Personal Transfer,0.9614749395479074
+2026-05-17,Received from Magdum,Credit,300.0,Personal Transfer,0.9596102137537725
+2026-05-08,Paid to Samarth aqua,Debit,25.0,Personal Transfer,0.9542771467325105
+2026-05-07,Received from Prathamesh Ambulge,Credit,345.0,Personal Transfer,0.9606872252926699
+2026-05-05,Mobile recharged 9370936296,Debit,353.0,Bills,0.9827924924479167
+2026-05-05,Paid to Prathamesh Ambulge,Debit,5.0,Personal Transfer,0.9441790548489305
+2026-05-05,Paid to Prathamesh Ambulge,Debit,1.0,Personal Transfer,0.9325877518653053
+2026-04-23,Paid to Prathamesh Ambulge,Debit,400.0,Personal Transfer,0.9618113613686128
+2026-04-23,Paid to PHYSICSWALLAH LIMITED,Debit,29.0,Personal Transfer,0.9549834609749276
+2026-04-16,Paid to The Madras Cafe,Debit,160.0,Personal Transfer,0.8815286576956778
+2026-04-16,Paid to Prathamesh Ambulge,Debit,1500.0,Personal Transfer,0.962692731474521
+2026-04-16,Received from Magdum,Credit,2000.0,Personal Transfer,0.9708677584586075
+2026-04-13,Received from Mr Aditya Ambadas Karkare,Credit,20.0,Personal Transfer,0.9294953924382057
+2026-04-12,Paid to EKART,Debit,439.0,Personal Transfer,0.9619056871101256
+2026-04-11,Paid to Samarth aqua,Debit,20.0,Personal Transfer,0.9531391207026495
+2026-03-29,Received from Sumit Shridhar Pawar,Credit,10.0,Personal Transfer,0.9006046901384298
+2026-03-18,Paid to ARBAJ ISMAIL SHAIKH,Debit,60.0,Personal Transfer,0.957878001138223
+2026-03-11,Paid to Pensalwar Snacks & Sweets,Debit,100.0,Personal Transfer,0.9593930017941257
+2026-03-10,Received from Prathamesh Ambulge,Credit,40.0,Personal Transfer,0.9390025930767005
+2026-03-10,Received from Solanke Vaibhav Badrinarayan,Credit,50.0,Personal Transfer,0.9417914860109252
+2026-03-10,Paid to ARBAJ ISMAIL SHAIKH,Debit,150.0,Personal Transfer,0.9603295691534609
+2026-03-09,Received from Parth Patne,Credit,12.0,Personal Transfer,0.9217196716431708
+2026-03-09,Paid to MAHESH BALAJI BHINGE,Debit,24.0,Personal Transfer,0.9540758014353604
+2026-03-07,Paid to Pensalwar Snacks & Sweets,Debit,20.0,Personal Transfer,0.9531391207026495
+2026-03-05,Paid to Neha Provision And General Stores Latur,Debit,10.0,Personal Transfer,0.9384996893343737
+2026-03-04,Paid to SIDDHESHWR ICECREAM,Debit,50.0,Personal Transfer,0.9572374922436481
+2026-03-02,Received from Pranav Sanjay Gadkar,Credit,200.0,Personal Transfer,0.9562462383480703
+2026-03-01,Paid to Aaisaheb medical store,Debit,14.0,Personal Transfer,0.9484012318907052
+2026-02-28,Paid to NASIR RAFIK KURESHI,Debit,210.0,Personal Transfer,0.9609506477879813
+2026-02-28,Paid to One breakfast and chat,Debit,420.0,Personal Transfer,0.9618616531784167
+2026-02-28,Received from Parth Patne,Credit,45.0,Personal Transfer,0.9404912544153259
+2026-02-27,Received from Kiran Kadwade,Credit,50.0,Personal Transfer,0.9417914860109252
+2026-02-26,Paid to TAMBOLI SHABANA SAULANI,Debit,20.0,Personal Transfer,0.9531391207026495
+2026-02-23,Paid to Shivprasad Tushar Kanhere,Debit,600.0,Personal Transfer,0.9621776309647535
+2026-02-18,Paid to Natural Faluda center,Debit,50.0,Personal Transfer,0.9572374922436481
+2026-02-18,Received from Parth Patne,Credit,50.0,Personal Transfer,0.9417914860109252
+2026-02-17,Mobile recharged 7796992835,Debit,402.0,Bills,0.9832529971547443
+2026-02-16,Paid to Shivprasad Tushar Kanhere,Debit,100.0,Personal Transfer,0.9593930017941257
+2026-02-15,Paid to Natural Faluda center,Debit,50.0,Personal Transfer,0.9572374922436481
+2026-02-13,Paid to Master PRATHAMESH BASWARAJ AMBULGE1,Debit,20.0,Personal Transfer,0.9531391207026495
+2026-02-13,Paid to Pensalwar Snacks & Sweets,Debit,30.0,Personal Transfer,0.9551391571514071
+2026-02-13,Received from Pranav Sanjay Gadkar,Credit,100.0,Personal Transfer,0.9496185636138232
+2026-02-12,Paid to Pensalwar Snacks & Sweets,Debit,30.0,Personal Transfer,0.9551391571514071
+2026-02-11,Paid to Prathamesh Ambulge,Debit,400.0,Personal Transfer,0.9618113613686128
+2026-02-11,Received from Mr Aditya Ambadas Karkare,Credit,10.0,Personal Transfer,0.9188089861834002
+2026-02-06,Received from Prathamesh Ambulge,Credit,150.0,Personal Transfer,0.9536344037582869
+2026-02-06,Paid to AVENUE SUPERMARTS LTD,Debit,288.5,Personal Transfer,0.961423589684744
+2026-02-03,Paid to The Madras Cafe,Debit,40.0,Personal Transfer,0.8772085843472307
+2026-02-02,Paid to Marvel Skin hair And Laser,Debit,1800.0,Personal Transfer,0.9627658443768942
+2026-02-02,Paid to Marvel Skin hair And Laser,Debit,300.0,Personal Transfer,0.9614749395479074
+2026-02-01,Received from Minaj Di,Credit,2000.0,Personal Transfer,0.9708677584586075
+2026-01-27,Paid to Health care medical,Debit,227.0,Personal Transfer,0.9610761522336286
+2026-01-27,Paid to Dental Care Clinic And Implant Center,Debit,100.0,Personal Transfer,0.9593930017941257
+2026-01-27,Paid to Dental Care Clinic And Implant Center,Debit,500.0,Personal Transfer,0.962026910126793
+2026-01-26,Received from Minaj Di,Credit,2000.0,Personal Transfer,0.9708677584586075
+2026-01-19,Paid to Shivprasad Tushar Kanhere,Debit,500.0,Personal Transfer,0.962026910126793
+2026-01-15,Received from Magdum,Credit,1000.0,Personal Transfer,0.9675882714417151
+2026-01-12,Received from Parth Patne,Credit,50.0,Personal Transfer,0.9417914860109252
+2026-01-12,Paid to MH 12 Paav Bhaji-Store1,Debit,170.0,Personal Transfer,0.9605760938206537
+2026-01-09,Paid to Shivprasad Tushar Kanhere,Debit,10.0,Personal Transfer,0.9490310474368492
+2026-01-05,Paid to Anna Fast food & Idli Centre,Debit,40.0,Personal Transfer,0.9501939041417328
+2026-01-03,Paid to Krishna Medical Chemist Druggist,Debit,20.0,Personal Transfer,0.9531391207026495
+2025-12-27,Paid to Master PRATHAMESH BASWARAJ AMBULGE1,Debit,135.0,Personal Transfer,0.960107013708232
+2025-12-27,Paid to Prathamesh Ambulge,Debit,15.0,Personal Transfer,0.9515372815400833
+2025-12-27,Received from Prathamesh Ambulge,Credit,150.0,Personal Transfer,0.9536344037582869
+2025-12-24,Paid to PRINCIPAL C.C.S. I.T COLLEGE OF COMPUTER,Debit,500.0,Personal Transfer,0.962026910126793
+2025-12-24,Received from Minaj Di,Credit,1000.0,Personal Transfer,0.9675882714417151
+2025-12-16,Paid to KULSWAMINI PARKING,Debit,20.0,Personal Transfer,0.9531391207026495
+2025-12-16,Received from Prathamesh Ambulge,Credit,20.0,Personal Transfer,0.9294953924382057
+2025-12-15,Paid to Aaisaheb medical store,Debit,175.0,Personal Transfer,0.958665725924389
+2025-12-14,Paid to Santosh Chaat Bhandar,Debit,10.0,Personal Transfer,0.9490310474368492
+2025-12-12,Paid to Aditya Suraj Dhumal,Debit,120.0,Personal Transfer,0.9598412685874752
+2025-12-12,Received from Prathamesh Ambulge,Credit,20.0,Personal Transfer,0.9294953924382057
+2025-12-12,Received from Parth Patne,Credit,30.0,Personal Transfer,0.9352105499885557
+2025-12-11,Paid to Hotel Surya Dakshin,Debit,70.0,Personal Transfer,0.9583774180949352
+2025-12-11,Paid to CM MANTRI AMRUTTULYA,Debit,40.0,Personal Transfer,0.9563772101566818
+2025-12-05,Paid to Paridhan garments,Debit,50.0,Personal Transfer,0.9572374922436481
+2025-12-04,Paid to APOLLO MEDICAL AND GENERAL STORES,Debit,30.0,Personal Transfer,0.9058111382181419
+2025-12-04,Paid to Vikas Jivan Tondare,Debit,10.0,Personal Transfer,0.9490310474368492
+2025-12-02,Paid to PRABHU MEDICAL,Debit,300.0,Personal Transfer,0.9614749395479074
+2025-12-01,Received from Magdum,Credit,15000.0,Personal Transfer,0.970069421860912
+2025-11-29,Received from ******2292,Credit,300.0,Personal Transfer,0.9596102137537725
+2025-11-29,Received from Minaj Di,Credit,5000.0,Personal Transfer,0.9733502341741334
+2025-11-24,Paid to Shafiq Salim Sayyad,Debit,300.0,Personal Transfer,0.9614749395479074
+2025-11-24,Received from Magdum,Credit,500.0,Personal Transfer,0.9633498745269847
+2025-11-18,Paid to Zudio Ganj Golai Z708,Debit,699.0,Personal Transfer,0.9622885585844951
+2025-11-09,Paid to Master PRATHAMESH BASWARAJ AMBULGE1,Debit,200.0,Personal Transfer,0.9608686366214748
+2025-11-09,Mobile recharged 8421068598,Debit,864.0,Bills,0.9856888410158916
+2025-11-03,Paid to PARTH VIJAYKUMAR PATNE MINOR,Debit,100.0,Personal Transfer,0.9593930017941257
+2025-11-01,Received from Magdum,Credit,650.0,Personal Transfer,0.9650650974250993
+2025-11-01,Paid to Magdum,Debit,1.0,Personal Transfer,0.9325877518653053
+2025-10-28,Received from SOLANKE VAIBHAV BADRINARAYAN,Credit,170.0,Personal Transfer,0.9547943567073394
+2025-10-28,Paid to CM MANTRI AMRUTTULYA,Debit,35.0,Personal Transfer,0.95582092188089
+2025-10-28,Received from Prathamesh Ambulge,Credit,83.0,Personal Transfer,0.9476364647721929
+2025-10-28,Paid to AVENUE SUPERMARTS LTD,Debit,905.5,Personal Transfer,0.962449605475356
+2025-10-23,Paid to PRABHU MEDICAL,Debit,587.0,Personal Transfer,0.962160623376179
+2025-10-23,Received from Magdum,Credit,400.0,Personal Transfer,0.9617825043871638
+2025-10-10,Received from Hp Gas Latur,Credit,50.0,Personal Transfer,0.6161272127779807
+2025-10-09,Paid to Magdum,Debit,703.0,Personal Transfer,0.9622924566674214
+2025-10-09,Received from Magdum,Credit,500.0,Personal Transfer,0.9633498745269847
+2025-10-05,Paid to Neha Provision And General Stores Latur,Debit,35.0,Personal Transfer,0.9485519024364016
+2025-10-04,Received from Minaj Di,Credit,2000.0,Personal Transfer,0.9708677584586075
+2025-10-04,Received from Magdum,Credit,2500.0,Personal Transfer,0.971697944447571
+2025-10-02,Paid to BALKUNDEKAR MEDICAL AND GENRAL STORES,Debit,500.0,Personal Transfer,0.962026910126793
+2025-10-02,Paid to Kayamkhani petroleum,Debit,220.0,Personal Transfer,0.961026430200278
+2025-10-01,Received from Magdum,Credit,3.0,Personal Transfer,0.8987705088436403
+2025-10-01,Paid to Magdum,Debit,1.0,Personal Transfer,0.9325877518653053
+2025-10-01,Received from Magdum,Credit,1.0,Personal Transfer,0.8824689406505667
+2025-10-01,Paid to BALKUNDEKAR MEDICAL AND GENRAL STORES,Debit,1199.0,Personal Transfer,0.9625939481748705
+2025-09-24,Paid to Mr. SHIRISH PUNDLIK BEMBDE,Debit,90.0,Personal Transfer,0.9591126278010828
+2025-09-24,Received from SAYALI SHYAM SAWANT,Credit,20.0,Personal Transfer,0.9294953924382057
+2025-09-24,Received from Arti More,Credit,10.0,Personal Transfer,0.9034889228121529
+2025-09-24,Received from SAYALI SHYAM SAWANT,Credit,10.0,Personal Transfer,0.9188089861834002
+2025-09-20,Paid to Magdum,Debit,41.0,Personal Transfer,0.9564766400272665
+2025-09-20,Received from Magdum,Credit,9000.0,Personal Transfer,0.9730222412391242
