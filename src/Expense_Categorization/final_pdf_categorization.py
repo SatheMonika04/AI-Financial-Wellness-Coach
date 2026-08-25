@@ -3,7 +3,7 @@ from src.Expense_Categorization.expense_categorization_pipeline_v2 import catego
 from pathlib import Path
 import pandas as pd
 
-MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "expense_classifier_pipeline_v3.pkl"
+MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "expense_classifier_pipeline_v6.pkl"
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 OUTPUT_COLUMNS = ("transaction_text", "amount", "payment_method", "transaction_type")
 DEFAULT_INPUT_CSV = PROJECT_ROOT / "Test Assets" / "PhonePe_Statement_Aug2025_Aug2026.csv"

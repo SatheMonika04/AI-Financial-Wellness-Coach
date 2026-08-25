@@ -75,16 +75,14 @@ def _categorize(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     result = categorize_dataframe(df)
-    if "category_confidence" in result.columns:
-        mask = result["category_confidence"] < LOW_CONFIDENCE_THRESHOLD
-        result.loc[mask, "predicted_category"] = "Uncategorized"
-    return result
+    return _apply_low_confidence_fallback(result)
 
 
 def _apply_low_confidence_fallback(df: pd.DataFrame) -> pd.DataFrame:
     """Mark low-confidence predictions as Uncategorized."""
     if "category_confidence" in df.columns:
         mask = df["category_confidence"] < LOW_CONFIDENCE_THRESHOLD
+        df = df.copy()
         df.loc[mask, "predicted_category"] = "Uncategorized"
     return df
 

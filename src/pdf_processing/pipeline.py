@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import logging
 from pathlib import Path
 from typing import Any
@@ -127,9 +128,18 @@ def process_bank_statement(file_path: str | Path, output_path: str | Path = "dat
 
 
 
-def main():
-    'run pipeline by giving file paths'
-    process_bank_statement("D:\clg_project\AI-Financial-Wellness-Coach\Test Assets\statement 3.pdf", "data/output/transactions.csv")
+def main(argv: list[str] | None = None) -> None:
+    """Run the pipeline from the command line."""
+    parser = argparse.ArgumentParser(description="Parse a bank statement PDF into a transaction CSV.")
+    parser.add_argument("input_path", nargs="?", default="statement1.pdf", help="Path to the PDF to parse.")
+    parser.add_argument(
+        "output_path",
+        nargs="?",
+        default="data/output/transactions.csv",
+        help="Where to save the extracted transactions CSV.",
+    )
+    args = parser.parse_args(argv)
+    process_bank_statement(Path(args.input_path), Path(args.output_path))
 
 
 if __name__ == "__main__":

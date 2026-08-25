@@ -12,7 +12,18 @@ def test_multiline_transaction_preserves_narration():
 
 def test_repeated_headers_are_ignored():
     pages = [{"page_number": 1, "text": "Date Narration Debit Credit Balance\n01/08/2026 Salary 50000.00 50000.00", "tables": []}]
-    assert len(parse_transactions(pages)) == 1
+    rows = parse_transactions(pages)
+    assert len(rows) == 1
+    assert rows[0]["transaction"] is None
+    assert rows[0]["amount"] == "50000.00"
+
+
+def test_unlabeled_amount_does_not_default_to_debit():
+    pages = [{"page_number": 1, "text": "01/08/2026 Salary 50000.00 50000.00", "tables": []}]
+    rows = parse_transactions(pages)
+    assert len(rows) == 1
+    assert rows[0]["transaction"] is None
+    assert rows[0]["amount"] == "50000.00"
 
 
 def test_explicit_transaction_type_preserves_trailing_balance():

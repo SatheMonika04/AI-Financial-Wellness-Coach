@@ -60,7 +60,9 @@ def _candidate_from_lines(lines: list[str]) -> dict[str, Any] | None:
 		elif re.search(r"(?:^|[/ ])(?:CR|CREDIT)(?:[/ ]|$)", description, re.I):
 			row["transaction"] = "Credit"
 		else:
-			row["transaction"] = "Debit"
+			# Do not guess a sign for unlabeled amounts: leave the type unset so
+			# validate_transaction() can reject the row as invalid for review.
+			row["transaction"] = None
 	return row
 
 
