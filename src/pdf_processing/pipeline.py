@@ -32,12 +32,9 @@ def _extract_transaction_rows(pages: list[dict[str, Any]]) -> list[dict[str, Any
                 detected["columns"],
             )
         )
-    if table_rows:
-        return table_rows
-
     text_rows = parse_transactions(pages)
     LOGGER.info("Detected %s transaction row(s) from page text", len(text_rows))
-    return text_rows
+    return text_rows or table_rows
 
 
 def process_bank_statement_to_dataframe(file_path: str | Path) -> pd.DataFrame:

@@ -40,7 +40,7 @@ html, body, [data-testid="stAppViewContainer"] {
 /* The whole app sits on one large centered rounded white canvas (like the reference) */
 .block-container {
   padding: 0 !important;
-  max-width: 1300px !important;
+  max-width: 1640px !important;
   background: var(--white);
   border-radius: var(--r-xl);
   margin: 26px auto !important;
@@ -404,6 +404,78 @@ div[data-testid="stTextInput"] label { font-size: 13px !important; font-weight: 
 }
 .mm-loaded-banner__text { font-size: 14px; font-weight: 600; color: var(--teal-deep); display: flex; align-items: center; gap: 8px; }
 
+/* ---------- Navbar extensions ---------- */
+.mm-nav__links a.active { color: var(--navy); }
+.mm-nav__links a.active::after { width: 100%; }
+.mm-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--teal-deep); color: white; display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+
+/* ---------- Upload page redesigned header ---------- */
+.mm-header-new { text-align: left; margin: 72px auto 54px; max-width: none; padding: 0 96px; }
+.mm-eyebrow-new { font-size: 13px; font-weight: 800; letter-spacing: 0.15em; color: var(--teal-deep); text-transform: uppercase; }
+.mm-h1-new { font-size: clamp(42px, 4.4vw, 64px); font-weight: 800; color: var(--navy); margin: 18px 0 16px; line-height: 1.08; letter-spacing: -0.02em; }
+.mm-lead-new { font-size: 18px; color: var(--muted); line-height: 1.7; margin: 0; max-width: 1040px; }
+
+/* ---------- Upload page custom dropzone ---------- */
+.mm-upload-custom-wrapper { position: relative; margin: 0 auto; max-width: none; padding: 0 96px; }
+div[data-testid="stFileUploader"] { max-width: none; margin: 0 96px 32px; padding: 0; }
+[data-testid="stFileUploaderDropzone"] { border: 2px dashed #dbe3ed !important; border-radius: 24px !important; background-color: #ffffff !important; padding: 68px 40px 44px !important; display: flex !important; flex-direction: column !important; align-items: center !important; text-align: center !important; min-height: 390px !important; box-shadow: 0 8px 24px rgba(11,31,58,.025); }
+[data-testid="stFileUploaderDropzone"] > div > span, [data-testid="stFileUploaderDropzone"] > div > small, [data-testid="stFileUploaderDropzone"] svg { display: none !important; }
+[data-testid="stFileUploaderDropzone"]::before {
+  content: ""; order: 1; display: block; width: 68px; height: 68px; margin: 0 auto 24px;
+  border-radius: 20px; background: linear-gradient(135deg, var(--navy), var(--teal-deep));
+  background-image: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M42 30v8a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4v-8M34 16l-10-10-10 10M24 6v24' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' transform='translate(8, 8)'/%3E%3C/svg%3E"), linear-gradient(135deg, var(--navy), var(--teal-deep));
+  background-repeat: no-repeat; background-position: center; background-size: 40px, cover; box-shadow: 0 12px 22px rgba(11,31,58,.16);
+}
+[data-testid="stFileUploaderDropzoneInstructions"] { order: 2; }
+[data-testid="stFileUploaderDropzoneInstructions"] span { display: none !important; }
+[data-testid="stFileUploaderDropzoneInstructions"] > div::before { content: "Drag & drop your statement here"; display: block; font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+[data-testid="stFileUploaderDropzoneInstructions"] > div::after { content: "PDF bank statements, PhonePe CSV exports, or any transaction CSV"; display: block; font-size: 15px; color: var(--muted); margin-bottom: 28px; }
+[data-testid="stFileUploaderDropzone"] > span { order: 3; }
+[data-testid="stFileUploaderDropzone"] button > div { display: none !important; }
+[data-testid="stFileUploaderDropzone"] button { background: var(--navy) !important; color: white !important; border-radius: 999px !important; padding: 14px 36px !important; font-size: 0 !important; font-weight: 700 !important; border: none !important; margin: 0 auto !important; display: block !important; transition: all 0.2s ease !important; }
+[data-testid="stFileUploaderDropzone"] button::after { content: "Browse files"; font-size: 15px; }
+[data-testid="stFileUploaderDropzone"] button:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 20px rgba(11,31,58,0.2) !important; }
+
+/* ---------- Upload page redesigned KPI cards ---------- */
+.mm-kpi-row { display: flex; gap: 24px; margin: 0 0 40px; flex-wrap: wrap; }
+.mm-kpi-card { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 28px; flex: 1; min-width: 260px; min-height: 142px; box-shadow: var(--shadow-sm); position: relative; }
+.mm-kpi-card--debit { border-top: 4px solid var(--navy); }
+.mm-kpi-card--credit { border-top: 4px solid var(--teal-deep); }
+.mm-kpi-card--txns { border-top: 4px solid var(--navy); }
+.mm-kpi-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.mm-kpi-head span { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+.mm-kpi-icon { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; font-weight: bold; }
+.mm-icon-red { background: #ffeaed; color: #e63946; }
+.mm-icon-green { background: #e3f8ec; color: var(--teal-deep); }
+.mm-icon-blue { background: #f0f4ff; color: var(--navy); }
+.mm-kpi-value { font-size: 42px; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-top: 4px; }
+
+/* ---------- Upload page custom transaction table ---------- */
+.mm-table-container { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 0 20px 18px; box-shadow: var(--shadow-sm); margin: 0 0 12px; overflow-x: auto; }
+.mm-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+.mm-table th { text-align: left; font-size: 11.5px; font-weight: 800; letter-spacing: 0.12em; color: var(--muted); padding: 18px 12px; border-bottom: 1px solid var(--line); text-transform: uppercase; }
+.mm-table th.right, .mm-table td.right { text-align: right; }
+.mm-table td { padding: 18px 12px; font-size: 14.5px; border-bottom: 1px solid #f9fafc; color: var(--navy); }
+.mm-table tr:last-child td { border-bottom: none; }
+.mm-cat-pill { font-size: 12.5px; font-weight: 700; padding: 6px 14px; border-radius: 999px; white-space: nowrap; }
+.type-debit { color: #e63946 !important; font-weight: 500; font-size: 13.5px; }
+.type-credit { color: var(--teal-deep) !important; font-weight: 500; font-size: 13.5px; }
+.amount-debit { color: #e63946 !important; font-weight: 700; }
+.amount-credit { color: var(--teal-deep) !important; font-weight: 700; }
+.mm-desc-cell { font-weight: 600; color: var(--navy); }
+
+/* ---------- Upload page filter bar override ---------- */
+.mm-filters-container { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 18px 24px; margin: 0 96px 28px; box-shadow: var(--shadow-sm); display: flex; align-items: center; }
+div[data-testid="stMultiSelect"] label, div[data-testid="stDateInput"] label, div[data-testid="stSlider"] label { color: var(--navy) !important; font-size: 12px !important; font-weight: 700 !important; letter-spacing: .08em; text-transform: uppercase; }
+div[data-testid="stMultiSelect"] [data-baseweb="select"], div[data-testid="stDateInput"] input { background: #fff !important; border-color: #dfe6ef !important; color: var(--navy) !important; }
+div[data-testid="stSlider"] [data-baseweb="slider"] [role="slider"] { background: var(--navy) !important; border-color: var(--navy) !important; }
+div[data-testid="stSlider"] [data-baseweb="slider"] > div > div { background: var(--navy) !important; }
+div[data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div > div > div > div.stSelectbox,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div > div > div > div.stMultiSelect,
+div[data-testid="stHorizontalBlock"] > div[data-testid="stVerticalBlock"] > div > div > div > div.stDateInput {
+    /* Style the inputs to look cleaner inside the filter bar if needed, otherwise Streamlit defaults are decent */
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
   .mm-hero, .mm-feature-hero { grid-template-columns: 1fr; }
@@ -429,4 +501,8 @@ div[data-testid="stTextInput"] label { font-size: 13px !important; font-weight: 
   .mm-kpis { grid-template-columns: 1fr; }
   .mm-stat-cards { grid-template-columns: 1fr; }
   .mm-stat-card__value { font-size: 26px; }
+  .mm-header-new { margin-top: 42px; padding: 0 22px; }
+  div[data-testid="stFileUploader"] { margin-left: 22px; margin-right: 22px; }
+  .mm-kpi-row { margin-left: 0; margin-right: 0; }
+  .mm-table-container, .mm-filters-container { margin-left: 22px; margin-right: 22px; }
 }

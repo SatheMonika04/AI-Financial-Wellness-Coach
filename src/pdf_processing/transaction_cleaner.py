@@ -10,12 +10,16 @@ import pandas as pd
 
 SCHEMA = ["transaction_date", "description", "transaction", "amount"]
 AMOUNT_PATTERN = re.compile(r"[\s₹,]")
+DAY_MONTH_PATTERN = re.compile(r"^(\d{1,2})[- ]([A-Za-z]{3,9})$")
 
 
 def clean_date(value: Any) -> pd.Timestamp | None:
     if value is None or not str(value).strip():
         return None
     text = str(value).strip()
+    day_month = DAY_MONTH_PATTERN.fullmatch(text)
+    if day_month:
+        text = f"{day_month.group(1)} {day_month.group(2)} {datetime.now().year}"
     for dayfirst in (True, False):
         parsed = pd.to_datetime(text, dayfirst=dayfirst, errors="coerce")
         if not pd.isna(parsed):

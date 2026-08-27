@@ -27,5 +27,5 @@ def convert_csv_and_categorize(pdf_path: str | Path, output_csv_path: str | Path
     return categorized_df
 
 
-convert_csv_and_categorize("D:/clg_project/AI-Financial-Wellness-Coach/Test Assets/statement 3.pdf", 
+convert_csv_and_categorize("D:/clg_project/AI-Financial-Wellness-Coach/Test Assets/Paytm_UPI_Statement_25_Jul'26_-_24_Aug'26.pdf", 
                            "D:/clg_project/AI-Financial-Wellness-Coach/data/output/transactions_categorized_3.csv") 

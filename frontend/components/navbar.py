@@ -3,7 +3,7 @@
 from ..utils.ui import html, logo_data_uri
 
 
-def render_navbar() -> None:
+def render_navbar(active_page: str = "landing") -> None:
     html(
         f"""
         <div class="mm-nav">
@@ -11,15 +11,13 @@ def render_navbar() -> None:
             <img src="{logo_data_uri()}" alt="MoneyMind AI logo" />
           </a>
           <nav class="mm-nav__links">
-            <a href="?page=landing" target="_self">Home</a>
-            <a href="?page=upload" target="_self">Upload</a>
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#ai-coach">AI Coach</a>
+            <a href="?page=dashboard" target="_self" class="{ 'active' if active_page == 'dashboard' else '' }">Dashboard</a>
+            <a href="?page=upload" target="_self" class="{ 'active' if active_page == 'upload' else '' }">Upload & Analyze</a>
+            <a href="#" target="_self">Insights</a>
+            <a href="#" target="_self">Budget</a>
           </nav>
           <div class="mm-nav__cta">
-            <a class="mm-btn mm-btn--ghost" href="?page=login" target="_self">Login</a>
-            <a class="mm-btn mm-btn--primary" href="?page=signup" target="_self">Get Started</a>
+            <div class="mm-avatar">PA</div>
           </div>
         </div>
         """

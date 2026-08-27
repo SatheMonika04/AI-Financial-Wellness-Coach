@@ -7,16 +7,32 @@ from typing import Any
 
 DATE_START = re.compile(
 	r"^\s*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|"
-	r"\d{1,2}[- ]?[A-Za-z]{3}[- ]?\d{2,4}|"
+	r"\d{1,2}[- ]?[A-Za-z]{3}(?:[- ]?\d{2,4})?|"
 	r"[A-Za-z]{3,9}\s+\d{1,2},\s*\d{4})\b",
 	re.I,
 )
 AMOUNT = re.compile(r"(?:₹\s*)?\(?[-]?\d[\d,]*(?:\.\d{1,2})?\)?(?:\s*(?:DR|CR))?", re.I)
+SIGNED_RUPEE_AMOUNT = re.compile(r"([+-])\s*(?:Rs\.?|INR|₹)\s*([\d,]+(?:\.\d{1,2})?)", re.I)
 SCHEMA = ("transaction_date", "description", "transaction", "amount")
 
 
 def _amounts(text: str) -> list[str]:
 	return [match.group(0).strip() for match in AMOUNT.finditer(text) if re.search(r"\d", match.group(0))]
+
+
+def _statement_description(lines: list[str], marker: re.Match[str]) -> str:
+	"""Keep the party name when PDF columns interleave metadata and time."""
+	marker_line = next(index for index, line in enumerate(lines) if marker.group(0) in line)
+	line_marker = re.search(r"\b(?:Paid to|Money sent to|Received from|Cashback Received from)\b", lines[marker_line], re.I)
+	first_line = re.split(r"(?:\bNote:|\bTag:|\bUPI ID|\bUPI Ref No)", lines[marker_line], maxsplit=1, flags=re.I)[0]
+	parts = [first_line[line_marker.start():].strip()] if line_marker else []
+	for line in lines[marker_line + 1:]:
+		stripped = line.strip()
+		if re.search(r"(?:\bUPI ID|\bUPI Ref No|\bNote:|\bTag:|\bYour Account|\bPage \d+)", stripped, re.I):
+			break
+		if stripped and not re.fullmatch(r"\d{1,2}:\d{2}\s*[AP]M", stripped, re.I):
+			parts.append(stripped)
+	return re.sub(r"\s+", " ", " ".join(parts)).strip(" -|")
 
 
 def _candidate_from_lines(lines: list[str]) -> dict[str, Any] | None:
@@ -25,6 +41,22 @@ def _candidate_from_lines(lines: list[str]) -> dict[str, Any] | None:
 		return None
 	body = " ".join(line.strip() for line in lines)
 	remainder = body[first.end():].strip()
+	signed_amount = SIGNED_RUPEE_AMOUNT.search(remainder)
+	if signed_amount:
+		debit_marker = re.search(r"\b(?:Paid to|Money sent to)\b", remainder, re.I)
+		credit_marker = re.search(r"\b(?:Received from|Cashback Received from)\b", remainder, re.I)
+		marker = debit_marker or credit_marker
+		if not marker:
+			return None
+		description = _statement_description(lines, marker)
+		row: dict[str, Any] = {key: None for key in SCHEMA}
+		row.update(
+			transaction_date=first.group(1),
+			description=description,
+			transaction="Debit" if signed_amount.group(1) == "-" else "Credit",
+			amount=signed_amount.group(2),
+		)
+		return row
 	type_match = re.search(r"\b(DEBIT|CREDIT)\b", remainder, re.I)
 	if type_match:
 		amounts = _amounts(remainder[type_match.end():])
