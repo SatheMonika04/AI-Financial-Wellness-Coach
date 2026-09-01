@@ -1,0 +1,34 @@
+transaction_date,description,transaction,amount,predicted_category,category_confidence,model_prediction
+2026-08-22,Paid to Mrs URMILA LAKSHMAN PANDHARE BharatPe Merchant Payments,Debit,70.0,Uncategorized,0.49140085243249715,Personal Transfer
+2026-08-22,Received from Rohan Rathod,Credit,20.0,Personal Transfer,0.9443941609047849,Personal Transfer
+2026-08-20,Paid to Lahu Hira Sul,Debit,20.0,Personal Transfer,0.7304085491722484,Personal Transfer
+2026-08-20,Received from Solanke Vaishnavi Badrinath from PhonePe Payments,Credit,20.0,Personal Transfer,0.9720454330987632,Personal Transfer
+2026-08-18,Received from Shivprasad Tushar Kanhere from PhonePe Payments,Credit,100.0,Personal Transfer,0.9857076095686775,Personal Transfer
+2026-08-17,Paid to Shaikh Mujahid Razzak,Debit,30.0,Personal Transfer,0.9554211804790275,Personal Transfer
+2026-08-17,Paid to Mali Hanmant Rajabhau,Debit,20.0,Personal Transfer,0.9021358074928628,Personal Transfer
+2026-08-15,Paid to Slice Small Finance Bank Limited # Miscellaneous Payments,Debit,800.0,Education,0.779321810329702,Education
+2026-08-14,Paid to Rutik Dashrath Salga,Debit,20.0,Personal Transfer,0.8663617649977606,Personal Transfer
+2026-08-13,Received from Advet Surykant Bhuite,Credit,15.0,Personal Transfer,0.9287404821063184,Personal Transfer
+2026-08-13,Paid to Rahim Khalil Shaikh,Debit,35.0,Personal Transfer,0.9602627040727697,Personal Transfer
+2026-08-13,Received from Mrs Surekha Hanmantrao Survase from PhonePe Payments,Credit,1600.0,Personal Transfer,0.9869864224029108,Personal Transfer
+2026-08-09,Paid to Dhondiram Govindrao Yache,Debit,20.0,Personal Transfer,0.8992485160998788,Personal Transfer
+2026-08-09,Received from Sairaj Santosh Shinde,Credit,20.0,Personal Transfer,0.9428177234132811,Personal Transfer
+2026-08-08,Received from Sairaj Santosh Shinde,Credit,20.0,Personal Transfer,0.9428177234132811,Personal Transfer
+2026-08-08,Paid to Meghraj Bharat Lobhe,Debit,30.0,Uncategorized,0.3846594852769571,Bills
+2026-08-08,Money sent to Sairaj Santosh Shinde,Debit,40.0,Personal Transfer,0.9397970853625334,Personal Transfer
+2026-08-07,Received from Bhadrinarayan Nanasaheb Solanke from PhonePe Payments,Credit,500.0,Personal Transfer,0.9638713608330901,Personal Transfer
+2026-08-07,Received from Mahesh Ashok Dange,Credit,20.0,Personal Transfer,0.9406798431696156,Personal Transfer
+2026-08-06,Received from Solanke Vaibhav Badrinarayan MobiKwik and got Payments cashback,Credit,50.0,Personal Transfer,0.7505251466695076,Personal Transfer
+2026-08-05,Received from Shivprasad Tushar Kanhere from PhonePe Payments,Credit,60.0,Personal Transfer,0.9850266580597825,Personal Transfer
+2026-08-04,Received from Bhadrinarayan Nanasaheb Solanke from PhonePe Payments,Credit,50.0,Personal Transfer,0.9644184429417826,Personal Transfer
+2026-08-03,Received from Master PRATHAMESH BASWARAJ AMBULGE from PhonePe Payments,Credit,5.0,Personal Transfer,0.9758279196338145,Personal Transfer
+2026-08-03,Received from Shivprasad Tushar Kanhere from PhonePe Payments,Credit,75.0,Personal Transfer,0.985335629689856,Personal Transfer
+2026-08-01,Received from Shivprasad Tushar Kanhere from PhonePe Payments,Credit,20.0,Personal Transfer,0.9832012486225138,Personal Transfer
+2026-07-31,Received from Pranav,Credit,100.0,Personal Transfer,0.953916918311105,Personal Transfer
+2026-07-29,Money sent to Pranav,Debit,100.0,Uncategorized,0.4371714616471551,Personal Transfer
+2026-07-28,Cashback Received from One97 Communications Limited Airtel using UPI on Payments Jul 26 2026,Credit,1.0,Uncategorized,0.4047890671016612,Personal Transfer
+2026-07-28,Paid to Shaikh Mujahid Razzak,Debit,15.0,Personal Transfer,0.9505192184708654,Personal Transfer
+2026-07-27,Received from Bhadrinarayan Nanasaheb Solanke from PhonePe Payments,Credit,100.0,Personal Transfer,0.9643867442197398,Personal Transfer
+2026-07-26,Received from Suyash Buddhiwant Dange MobiKwik and got Payments cashback,Credit,100.0,Personal Transfer,0.7720735544023091,Personal Transfer
+2026-07-26,Paid to Airtel Payments Bank Limited,Debit,100.0,Bills,0.921911874160997,Bills
+2026-07-25,Paid to Shaikh Mujahid Razzak,Debit,15.0,Personal Transfer,0.9505192184708654,Personal Transfer

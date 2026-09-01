@@ -1,0 +1,21 @@
+user_id,age,occupation,monthly_income,monthly_expense,savings_goal,financial_goal,credit_score,total_debt
+U0001,60,Accountant,97700.0,59200.0,23600.0,Higher Education,676,1131700.0
+U0002,50,Software Engineer,96900.0,71200.0,17900.0,Debt Repayment,688,705900.0
+U0003,36,Consultant,114800.0,32000.0,18100.0,Travel,789,380200.0
+U0004,29,Government Employee,114800.0,30200.0,11800.0,Business Investment,801,408100.0
+U0005,42,Freelancer,129600.0,33800.0,17400.0,Travel,799,257000.0
+U0006,60,Software Engineer,94100.0,30800.0,12800.0,Business Investment,783,17700.0
+U0007,40,Consultant,90500.0,26700.0,18300.0,Debt Repayment,750,459800.0
+U0008,44,Doctor,112600.0,35300.0,21600.0,Travel,747,533600.0
+U0009,32,Marketing Professional,93500.0,19900.0,21000.0,Higher Education,777,329300.0
+U0010,32,Business Owner,147700.0,29500.0,18600.0,Emergency Fund,832,25000.0
+U0011,45,Freelancer,100500.0,64600.0,15900.0,Debt Repayment,769,239800.0
+U0012,57,Doctor,107500.0,75200.0,13700.0,Business Investment,675,917600.0
+U0013,45,Accountant,100600.0,53500.0,21500.0,Retirement,675,953900.0
+U0014,24,Doctor,105600.0,65200.0,17300.0,Business Investment,692,767900.0
+U0015,43,Marketing Professional,110900.0,96900.0,14500.0,Retirement,656,1232700.0
+U0016,23,Accountant,105100.0,59800.0,19500.0,Buy a House,701,821100.0
+U0017,45,Freelancer,112500.0,55600.0,11800.0,Travel,708,1235200.0
+U0018,51,Marketing Professional,97500.0,57400.0,22100.0,Retirement,646,994500.0
+U0019,59,Teacher,101500.0,61300.0,17000.0,Business Investment,723,547400.0
+U0020,23,Business Owner,102500.0,53400.0,16300.0,Buy a House,811,117400.0

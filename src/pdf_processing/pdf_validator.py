@@ -1,10 +1,13 @@
+from pathlib import Path
+from typing import Any
+
 import pdfplumber
 
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
-def validate_pdf(file_path):
+def validate_pdf(file_path: str | Path) -> dict[str, Any]:
     """
     Validate a bank statement PDF before processing.
 
@@ -27,9 +30,9 @@ def validate_pdf(file_path):
     # --------------------------------------------------
     # 1. Check whether file exists
     # --------------------------------------------------
-    import os
+    path = Path(file_path)
 
-    if not os.path.exists(file_path):
+    if not path.exists():
         result["error"] = "PDF file does not exist."
         return result
 
@@ -38,7 +41,7 @@ def validate_pdf(file_path):
     # --------------------------------------------------
     # 2. Check file extension
     # --------------------------------------------------
-    if not file_path.lower().endswith(".pdf"):
+    if path.suffix.lower() != ".pdf":
         result["error"] = "File is not a PDF."
         return result
 
@@ -47,9 +50,9 @@ def validate_pdf(file_path):
     # --------------------------------------------------
     # 3. Check file size
     # --------------------------------------------------
-    file_size = os.path.getsize(file_path)
+    file_size = path.stat().st_size
 
-    if file_size > MAX_FILE_SIZE:
+    if file_size == 0 or file_size > MAX_FILE_SIZE:
         result["error"] = "PDF file exceeds the 10 MB limit."
         return result
 
@@ -60,7 +63,7 @@ def validate_pdf(file_path):
     # --------------------------------------------------
     try:
 
-        with pdfplumber.open(file_path) as pdf:
+        with pdfplumber.open(path) as pdf:
 
             result["page_count"] = len(pdf.pages)
             result["is_readable"] = True
@@ -77,7 +80,8 @@ def validate_pdf(file_path):
 
         error_message = repr(e)
 
-        if "PDFPasswordIncorrect" in error_message:
+        if "PDFPasswordIncorrect" in error_message or "encrypted" in error_message.lower():
+            result["is_encrypted"] = True
             result["error"] = (
                 "PDF is password protected. "
                 "Please upload an unlocked PDF."
@@ -107,5 +111,12 @@ def validate_pdf(file_path):
     result["valid"] = True
     return result
 
-result = validate_pdf("D:\\clg_project\\AI-Financial-Wellness-Coach\\PhonePe_Statement_Jul2026_Aug2026.pdf")
-print(result)
+def detect_pdf_type(validation: dict[str, Any]) -> str:
+    """Classify a validation result before extraction begins."""
+    if validation.get("is_encrypted"):
+        return "PASSWORD_PROTECTED"
+    if not validation.get("is_readable") or not validation.get("is_pdf"):
+        return "INVALID"
+    if not validation.get("has_text"):
+        return "SCANNED_OR_IMAGE_ONLY"
+    return "TEXT_BASED"

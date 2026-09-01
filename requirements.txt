@@ -1,1 +1,8 @@
 
+pdfplumber
+pandas
+pytest
+numpy
+scikit-learn
+joblib
+
