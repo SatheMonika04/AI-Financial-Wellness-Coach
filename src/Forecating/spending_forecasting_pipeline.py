@@ -1,50 +1,3 @@
-"""
-spending_forecast_pipeline_simple.py
-
-Simple prediction pipeline for the spending forecast model.
-Loads the trained model, takes raw transaction data, and returns a
-prediction. Written as plain functions (no classes) to keep it easy to
-read and use in an app.
-
-WHAT THE MODEL PREDICTS
-------------------------
-This model predicts a "smoothed" spending level (roughly, the average
-spending over a 14-day window), not one exact day's raw spend. Think of
-it as "what's the general spending trend right now", not "exact rupees
-spent tomorrow".
-
-BEFORE YOU RUN THIS
----------------------
-The notebook needs to actually save the trained model first. In the
-notebook, find this section (it's commented out) and uncomment it:
-
-    joblib.dump(best_model, f"{MODEL}/spending_forecaster.pkl")
-    joblib.dump(
-        {
-            "features": features,
-            "target": "14-day centered smoothed total_spending",
-            "cap_value": float(df["amount"].quantile(0.95)),   # <-- add this line
-        },
-        f"{MODEL}/model_metadata.pkl",
-    )
-
-Adding "cap_value" is important — it's the outlier cutoff the model was
-trained with, and we need to reuse the exact same number when making
-predictions later.
-
-HOW TO USE
------------
-    import pandas as pd
-    from spending_forecast_pipeline_simple import load_model, predict_latest
-
-    model, metadata = load_model("models/spending_forecaster.pkl",
-                                  "models/model_metadata.pkl")
-
-    transactions = pd.read_csv("user_transactions.csv")
-    result = predict_latest(model, metadata, transactions)
-    print(result)
-    # {"date": "2026-08-01", "predicted_spending": 12345.67}
-"""
 
 import joblib
 import pandas as pd
@@ -193,7 +146,7 @@ if __name__ == "__main__":
     # Change these paths to match your files
     MODEL_PATH = "src/models/spending_forecaster.pkl"
     METADATA_PATH = "src/models/model_metadata.pkl"
-    TRANSACTIONS_CSV = "src/transactions.csv"
+    TRANSACTIONS_CSV = "D:\\clg_project\\AI-Financial-Wellness-Coach\\data\\master\\final_master_transaction.csv"
 
     model, metadata = load_model(MODEL_PATH, METADATA_PATH)
     transactions = pd.read_csv(TRANSACTIONS_CSV)
