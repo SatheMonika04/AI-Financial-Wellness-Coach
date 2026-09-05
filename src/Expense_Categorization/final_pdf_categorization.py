@@ -28,4 +28,4 @@ def convert_csv_and_categorize(pdf_path: str | Path, output_csv_path: str | Path
 
 
 convert_csv_and_categorize("D:/clg_project/AI-Financial-Wellness-Coach/Test Assets/statement 3.pdf", 
-                           "D:/clg_project/AI-Financial-Wellness-Coach/data/output/transactions_categorized_4.csv") 
+                           "D:/clg_project/AI-Financial-Wellness-Coach/data/output/transactions_categorized_5.csv") 
