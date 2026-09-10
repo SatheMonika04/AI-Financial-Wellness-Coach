@@ -1,0 +1,102 @@
+{
+  "dataset": {
+    "rows": 7000,
+    "train": 4900,
+    "validation": 1050,
+    "test": 1050
+  },
+  "date_ranges": {
+    "train": [
+      "2018-01-01 00:09:16",
+      "2019-03-20 12:38:25"
+    ],
+    "validation": [
+      "2019-03-20 12:57:32",
+      "2019-06-29 20:54:17"
+    ],
+    "test": [
+      "2019-06-29 22:11:18",
+      "2019-11-10 03:45:34"
+    ]
+  },
+  "features": [
+    "log_amount",
+    "transaction_hour",
+    "is_weekend",
+    "is_month_end",
+    "is_salary_week",
+    "is_night",
+    "is_evening",
+    "log_merchant_transaction_count_hist",
+    "log_merchant_median_amount_hist",
+    "log_amount_vs_merchant_median",
+    "merchant_zscore_transformed",
+    "log_category_transaction_count_hist",
+    "log_category_median_amount_hist",
+    "log_amount_vs_category_median",
+    "category_zscore_transformed"
+  ],
+  "leakage_check": "Each row is scored before its amount is added to merchant/category history; validation starts with train history and test starts with train plus validation history.",
+  "model": {
+    "random_state": 42,
+    "n_estimators": 300,
+    "max_samples": 1.0,
+    "contamination": 0.05,
+    "max_features": 0.8
+  },
+  "threshold": {
+    "selected": 0.030364760099590507,
+    "candidates": [
+      {
+        "percentile": 0.95,
+        "threshold": -0.000793170084359525,
+        "anomaly_count": 53,
+        "anomaly_rate": 0.05047619047619047
+      },
+      {
+        "percentile": 0.97,
+        "threshold": 0.013939832532772884,
+        "anomaly_count": 32,
+        "anomaly_rate": 0.030476190476190476
+      },
+      {
+        "percentile": 0.98,
+        "threshold": 0.030364760099590507,
+        "anomaly_count": 21,
+        "anomaly_rate": 0.02
+      },
+      {
+        "percentile": 0.99,
+        "threshold": 0.04740037907153298,
+        "anomaly_count": 11,
+        "anomaly_rate": 0.010476190476190476
+      },
+      {
+        "percentile": 0.995,
+        "threshold": 0.05472433529808065,
+        "anomaly_count": 6,
+        "anomaly_rate": 0.005714285714285714
+      }
+    ],
+    "selection_rule": "validation-only percentile closest to 2%"
+  },
+  "validation": {
+    "count": 1050,
+    "anomaly_count": 21,
+    "anomaly_rate": 0.02,
+    "score_min": -0.1582521656267119,
+    "score_median": -0.09410869203931871,
+    "score_mean": -0.08474501898013341,
+    "score_max": 0.07506766146325727
+  },
+  "test": {
+    "count": 1050,
+    "anomaly_count": 33,
+    "anomaly_rate": 0.03142857142857143,
+    "score_min": -0.15963037084204162,
+    "score_median": -0.08912992734259689,
+    "score_mean": -0.0785288481476364,
+    "score_max": 0.11713551183658977
+  },
+  "accuracy_note": "No ground-truth anomaly labels exist; accuracy is not reported."
+}

@@ -1,0 +1,37 @@
+{
+  "threshold": 0.030364760099590507,
+  "selected_percentile": 0.98,
+  "selection_rule": "validation percentile closest to a 2% anomaly rate",
+  "candidate_thresholds": [
+    {
+      "percentile": 0.95,
+      "threshold": -0.000793170084359525,
+      "anomaly_count": 53,
+      "anomaly_rate": 0.05047619047619047
+    },
+    {
+      "percentile": 0.97,
+      "threshold": 0.013939832532772884,
+      "anomaly_count": 32,
+      "anomaly_rate": 0.030476190476190476
+    },
+    {
+      "percentile": 0.98,
+      "threshold": 0.030364760099590507,
+      "anomaly_count": 21,
+      "anomaly_rate": 0.02
+    },
+    {
+      "percentile": 0.99,
+      "threshold": 0.04740037907153298,
+      "anomaly_count": 11,
+      "anomaly_rate": 0.010476190476190476
+    },
+    {
+      "percentile": 0.995,
+      "threshold": 0.05472433529808065,
+      "anomaly_count": 6,
+      "anomaly_rate": 0.005714285714285714
+    }
+  ]
+}

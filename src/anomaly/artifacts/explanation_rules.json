@@ -1,0 +1,10 @@
+{
+  "rules": [
+    "amount > 2x historical merchant median",
+    "amount > 2x historical category median",
+    "first transaction for merchant or category",
+    "night or evening transaction",
+    "fallback: combined amount, timing, and historical behavior"
+  ],
+  "history_policy": "Rules use only history available before the evaluated transaction."
+}

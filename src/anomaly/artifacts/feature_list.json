@@ -1,0 +1,17 @@
+[
+  "log_amount",
+  "transaction_hour",
+  "is_weekend",
+  "is_month_end",
+  "is_salary_week",
+  "is_night",
+  "is_evening",
+  "log_merchant_transaction_count_hist",
+  "log_merchant_median_amount_hist",
+  "log_amount_vs_merchant_median",
+  "merchant_zscore_transformed",
+  "log_category_transaction_count_hist",
+  "log_category_median_amount_hist",
+  "log_amount_vs_category_median",
+  "category_zscore_transformed"
+]
