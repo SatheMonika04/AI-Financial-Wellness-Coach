@@ -2,19 +2,18 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { endOfMonth, format, parseISO } from "date-fns";
-import { AlertTriangle, ArrowRight, BrainCircuit, Gauge, PiggyBank, Sparkles, TrendingDown, TrendingUp, Upload, Wallet, ReceiptText, Percent } from "lucide-react";
+import { AlertTriangle, ArrowRight, BrainCircuit, Gauge, PiggyBank, Sparkles, Upload, Wallet, ReceiptText, Percent } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Amount, CategoryBadge, CategoryDot, DemoBadge, EmptyState, KpiCard, MoneyTooltip, ProgressBar, SectionCard, axisTick, inrAxis } from "@/components/common";
+import { Amount, CategoryBadge, CategoryDot, EmptyState, KpiCard, MoneyTooltip, ProgressBar, SectionCard, axisTick, inrAxis } from "@/components/common";
 import { PeriodSelect } from "@/components/layout/TopBar";
 import { TransactionDetailSheet } from "@/components/transactions/TransactionDetailSheet";
 import { useAppStore } from "@/store/AppStore";
 import { useBudgetRows, usePeriodData } from "@/hooks/useFinanceData";
 import { useForecast } from "@/hooks/useModels";
 import { dailySeries, inRange, monthlySeries, totals } from "@/lib/analytics";
-import { buildInsights } from "@/lib/insights";
 import { formatDate, formatINR, formatPct, pctChange } from "@/lib/format";
 import { CATEGORY_META } from "@/lib/categories";
 import { TODAY } from "@/lib/period";
@@ -38,17 +37,28 @@ export function OverviewPage() {
     if (range.months === 1) return dailySeries(current, range.start, range.end < TODAY ? range.end : TODAY).map((d) => ({ label: d.label, amount: d.amount }));
     return monthlySeries(state.transactions, range.months).map((m) => ({ label: m.label, amount: m.expenses }));
   }, [current, range, state.transactions]);
-  const insights = useMemo(() => buildInsights(current, prev, rows), [current, prev, rows]);
 
   const budgetTotal = rows.reduce((s, r) => s + r.budget, 0);
   const budgetSpent = rows.reduce((s, r) => s + r.spent, 0);
   const utilization = budgetTotal ? budgetSpent / budgetTotal : null;
-  const flagged = current.filter((x) => x.anomaly?.flagged);
-  const prevFlagged = prev.filter((x) => x.anomaly?.flagged).length;
   const recent = state.transactions.slice(0, 7);
   const firstName = state.profile.name.split(" ")[0];
 
   if (!state.hydrated) return <OverviewSkeleton />;
+
+  if (state.transactions.length === 0) return (
+    <div className="space-y-6">
+      <div className="rounded-2xl bg-gradient-brand p-6 text-primary-foreground shadow-elevated sm:p-8">
+        <h1 className="font-display text-2xl font-semibold sm:text-3xl">Financial overview</h1>
+        <p className="mt-2 text-sm opacity-85">Your financial overview will appear here once your financial data is available.</p>
+        <Button asChild variant="secondary" size="sm" className="mt-4"><Link to="/upload"><Upload /> Import statement</Link></Button>
+      </div>
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+        {[["Total income", Wallet], ["Total expenses", ReceiptText], ["Current savings", PiggyBank], ["Savings rate", Percent], ["Budget utilization", Gauge], ["Unusual transactions", AlertTriangle]].map(([label, Icon]) => <KpiCard key={String(label)} label={String(label)} value="—" icon={Icon as typeof Wallet} />)}
+      </div>
+      <SectionCard><EmptyState icon={ReceiptText} title="No transaction data is available yet" description="Import a statement to see your financial activity here." /></SectionCard>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -83,8 +93,8 @@ export function OverviewPage() {
           tone="ai"
           hint={t.savingsRate != null && pt.savingsRate != null ? `${t.savingsRate >= pt.savingsRate ? "+" : ""}${Math.round((t.savingsRate - pt.savingsRate) * 100)} pts` : "No prior data"}
         />
-        <KpiCard label="Budget utilization" value={formatPct(utilization)} icon={Gauge} tone={utilization && utilization > 1 ? "destructive" : utilization && utilization > 0.85 ? "warning" : "default"} hint={`${formatINR(budgetSpent, { compact: true })} of ${formatINR(budgetTotal, { compact: true })}`} />
-        <KpiCard label="Unusual transactions" value={flagged.length} icon={AlertTriangle} tone="ai" hint={`${flagged.filter((f) => f.anomaly?.reviewStatus === "new").length} need review · prev ${prevFlagged}`} />
+        <KpiCard label="Budget utilization" value={formatPct(utilization)} icon={Gauge} tone={utilization && utilization > 1 ? "destructive" : utilization && utilization > 0.85 ? "warning" : "default"} hint={budgetTotal ? `${formatINR(budgetSpent, { compact: true })} of ${formatINR(budgetTotal, { compact: true })}` : "Budget data unavailable"} />
+        <KpiCard label="Unusual transactions" value="—" icon={AlertTriangle} tone="ai" hint="Anomaly analysis unavailable" />
       </div>
       <p className="-mt-3 text-[11px] text-muted-foreground">Changes shown {range.compareLabel}.</p>
 
@@ -182,7 +192,7 @@ export function OverviewPage() {
 
       <div className="grid gap-6 xl:grid-cols-3">
         <SectionCard title="Budget health" description={`${range.label} vs. allocated budget`} action={<Button asChild variant="ghost" size="sm"><Link to="/budgets">Manage <ArrowRight /></Link></Button>}>
-          <ul className="space-y-4">
+          {budgetTotal === 0 ? <EmptyState icon={Wallet} title="No budget data available" description="Your budget summary will appear here when budget data is available." /> : <ul className="space-y-4">
             {[...rows].sort((a, b) => b.pct - a.pct).slice(0, 6).map((r) => (
               <li key={r.category}>
                 <div className="mb-1.5 flex items-center justify-between gap-2 text-sm">
@@ -197,29 +207,11 @@ export function OverviewPage() {
                 </p>
               </li>
             ))}
-          </ul>
+          </ul>}
         </SectionCard>
 
-        <SectionCard className="xl:col-span-2" title={<span className="flex items-center gap-2"><BrainCircuit className="size-4 text-ai" /> AI financial insights</span>} description={`Based on ${range.label.toLowerCase()} · ${range.compareLabel}`}>
-          {insights.length === 0 ? (
-            <EmptyState icon={Sparkles} title="Not enough data for insights" description="Insights appear once you have transactions in two comparable periods." />
-          ) : (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {insights.map((i) => {
-                const Icon = i.tone === "positive" ? TrendingUp : i.tone === "negative" ? TrendingDown : Sparkles;
-                return (
-                  <div key={i.id} className="rounded-xl border bg-card p-4 transition-shadow hover:shadow-card">
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <Badge variant={i.tone === "positive" ? "success" : i.tone === "negative" ? "warning" : "ai"}><Icon /> {i.type}</Badge>
-                      <span className="text-[11px] text-muted-foreground">{range.label}</span>
-                    </div>
-                    <p className="text-sm font-semibold text-foreground">{i.title}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{i.detail}</p>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+        <SectionCard className="xl:col-span-2" title={<span className="flex items-center gap-2"><BrainCircuit className="size-4 text-ai" /> AI financial insights</span>}>
+          <EmptyState icon={Sparkles} title="Insights aren’t available yet" description="Insights will be available once your financial data has been processed." />
         </SectionCard>
       </div>
 
@@ -274,11 +266,11 @@ function OutlookCard() {
   const daysLeft = Math.round((parseISO(monthEnd).getTime() - TODAY.getTime()) / 86400000) + 1;
 
   return (
-    <SectionCard title="Upcoming outlook" description={`Rest of ${format(TODAY, "MMMM")} · ${daysLeft} days left`} action={<DemoBadge label="Demo forecast" />}>
+      <SectionCard title="Upcoming outlook" description={`Rest of ${format(TODAY, "MMMM")} · ${daysLeft} days left`}>
       {isLoading ? (
         <div className="space-y-3"><Skeleton className="h-16" /><Skeleton className="h-16" /><Skeleton className="h-10" /></div>
       ) : rest == null ? (
-        <EmptyState icon={TrendingUp} title="Not enough history" description="A forecast needs at least 30 days of transactions." />
+        <EmptyState icon={TrendingUp} title="Forecasts aren’t available yet" description="Forecasts will appear when the required financial data and model are available." />
       ) : (
         <div className="space-y-3">
           <div className="rounded-xl bg-muted/60 p-4">

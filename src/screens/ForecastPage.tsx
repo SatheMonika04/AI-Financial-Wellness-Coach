@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CategoryDot, DeltaBadge, DemoBadge, EmptyState, KpiCard, MoneyTooltip, PageIntro, SectionCard, axisTick, inrAxis } from "@/components/common";
+import { CategoryDot, DeltaBadge, EmptyState, KpiCard, MoneyTooltip, PageIntro, SectionCard, axisTick, inrAxis } from "@/components/common";
 import { useAppStore } from "@/store/AppStore";
 import { useForecast } from "@/hooks/useModels";
 import { inRange, totals } from "@/lib/analytics";
@@ -33,7 +33,7 @@ export function ForecastPage() {
       <div>
         <PageIntro title="Spending forecast" />
         <SectionCard>
-          <EmptyState icon={History} title="Not enough history to forecast" description={`The forecasting model needs at least ${data?.minHistoryDays ?? 30} days of transactions. You currently have ${history.filter((h) => h.amount > 0).length} days with spending.`} action={<Button asChild><Link to="/upload"><Upload /> Upload statements</Link></Button>} />
+        <EmptyState icon={History} title="Forecasts aren’t available yet" description="Forecasts will appear when the required financial data and forecasting model are available." action={<Button asChild><Link to="/upload"><Upload /> Import transactions</Link></Button>} />
         </SectionCard>
       </div>
     );
@@ -56,7 +56,6 @@ export function ForecastPage() {
       <PageIntro
         title="Spending forecast"
         description="Projected daily spending based on your historical patterns."
-        badge={<DemoBadge label="Demo forecast" tip="Predictions are a simple demo baseline. Real predictions will come from the saved forecasting model through the backend." />}
         actions={<Button variant="outline" onClick={() => refetch()} disabled={isFetching}>{isFetching ? <Loader2 className="animate-spin" /> : <RefreshCw />} Refresh forecast</Button>}
       />
 
@@ -134,7 +133,7 @@ export function ForecastPage() {
         <SectionCard title={<span className="flex items-center gap-2"><Cpu className="size-4 text-ai" /> Model information</span>}>
           <dl className="space-y-3 text-sm">
             {[
-              ["Status", <Badge key="s" variant="ai">Demo mode — model not connected</Badge>],
+              ["Status", <Badge key="s" variant="ai">Model output</Badge>],
               ["Generated", data.generatedAt.replace("T", " ")],
               ["Forecast horizon", `${data.horizonDays} days`],
               ["Historical coverage", `${data.history.days} days (${data.history.start} → ${data.history.end})`],

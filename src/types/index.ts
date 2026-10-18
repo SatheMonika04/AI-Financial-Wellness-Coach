@@ -19,7 +19,7 @@ export type BudgetCategory = ExpenseCategory | "Savings";
 export type TransactionType = "income" | "expense";
 export type PaymentMethod = "UPI" | "Credit Card" | "Debit Card" | "Net Banking" | "Cash" | "Auto Debit";
 export type TransactionStatus = "completed" | "pending" | "failed";
-export type DataSource = "demo" | "model";
+export type DataSource = "model";
 
 /** Output of the expense categorization pipeline. */
 export interface CategoryPrediction {
@@ -62,12 +62,12 @@ export interface Transaction {
   description: string;
   category: Category;
   type: TransactionType;
-  paymentMethod: PaymentMethod;
+  paymentMethod?: PaymentMethod;
   amount: number;
   status: TransactionStatus;
-  prediction: CategoryPrediction;
+  prediction?: CategoryPrediction;
   anomaly?: AnomalyResult;
-  source: "demo" | "import" | "manual";
+  source: "import" | "manual";
   recurring?: boolean;
   notes?: string;
 }
@@ -82,11 +82,10 @@ export interface ColumnMapping {
 
 export interface StatementParseResult {
   fileName: string;
-  fileType: "csv" | "pdf";
+  fileType: "csv";
   headers: string[];
   rows: string[][];
   suggestedMapping: ColumnMapping;
-  source: DataSource;
 }
 
 export interface ImportCandidate {
@@ -96,8 +95,7 @@ export interface ImportCandidate {
   description: string;
   amount: number;
   type: TransactionType;
-  prediction: CategoryPrediction;
-  category: Category;
+  category: Category | null;
   duplicateOf?: string;
   include: boolean;
 }

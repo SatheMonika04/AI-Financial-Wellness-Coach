@@ -1,15 +1,13 @@
 import { useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { AlertOctagon, Check, Eye, Loader2, Radar, ScanSearch, ShieldCheck, X } from "lucide-react";
+import { AlertOctagon, Check, Eye, Radar, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CategoryBadge, DemoBadge, EmptyState, KpiCard, PageIntro, ReviewBadge, SectionCard, SeverityBadge, axisTick } from "@/components/common";
+import { CategoryBadge, EmptyState, KpiCard, PageIntro, ReviewBadge, SectionCard, SeverityBadge, axisTick } from "@/components/common";
 import { TransactionDetailSheet } from "@/components/transactions/TransactionDetailSheet";
 import { useAppStore } from "@/store/AppStore";
-import { anomalyService } from "@/services/anomalyService";
 import { formatDate, formatINR } from "@/lib/format";
-import { monthlySeries } from "@/lib/analytics";
 import type { AnomalyReviewStatus } from "@/types";
 
 export function AnomaliesPage() {
@@ -17,43 +15,40 @@ export function AnomaliesPage() {
   const [severity, setSeverity] = useState("all");
   const [status, setStatus] = useState("all");
   const [openTx, setOpenTx] = useState<string | null>(null);
-  const [running, setRunning] = useState(false);
-  const [lastRun, setLastRun] = useState<string | null>(null);
 
   const flagged = useMemo(() => state.transactions.filter((t) => t.anomaly?.flagged), [state.transactions]);
   const list = flagged.filter((t) => (severity === "all" || t.anomaly!.severity === severity) && (status === "all" || t.anomaly!.reviewStatus === status));
   const high = flagged.filter((t) => t.anomaly!.severity === "high" && t.anomaly!.reviewStatus === "new");
   const trend = useMemo(() => {
-    const months = monthlySeries([], 6);
-    return months.map((m) => ({ label: m.label, count: flagged.filter((t) => t.date.startsWith(m.key)).length }));
+    const counts = new Map<string, number>();
+    flagged.forEach((transaction) => {
+      const month = transaction.date.slice(0, 7);
+      counts.set(month, (counts.get(month) ?? 0) + 1);
+    });
+    return [...counts].sort(([a], [b]) => a.localeCompare(b)).map(([label, count]) => ({ label, count }));
   }, [flagged]);
 
-  const run = async () => {
-    setRunning(true);
-    try {
-      const r = await anomalyService.runDetection(state.transactions);
-      setLastRun(r.ranAt);
-      toast.success("Analysis complete", { description: `${r.analyzed} transactions analyzed · ${r.flagged} flagged (demo results)` });
-    } finally {
-      setRunning(false);
-    }
-  };
-  const quick = async (id: string, s: AnomalyReviewStatus) => {
-    await anomalyService.updateReview(id, s);
+  const quick = (id: string, s: AnomalyReviewStatus) => {
     actions.reviewAnomaly(id, s);
     toast.success(s === "reviewed" ? "Marked as reviewed" : "Alert dismissed");
   };
+
+  if (!state.hydrated) return <SectionCard><div className="h-40 animate-pulse" /></SectionCard>;
+  if (flagged.length === 0) return (
+    <div className="space-y-6">
+      <PageIntro title="Unusual transactions" description="Anomaly results will appear when transaction data has been analyzed." />
+      <SectionCard><EmptyState icon={ShieldCheck} title="No anomaly results available" description="Transaction alerts will appear after real transaction data is analyzed by a connected model." /></SectionCard>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
       <PageIntro
         title="Unusual transactions"
-        description="Transactions that look different from your usual patterns. Unusual does not mean fraud — review them to confirm."
-        badge={<DemoBadge label="Demo detections" tip="Flags and explanations are demo examples. They will be replaced by Isolation Forest output from the backend." />}
-        actions={<Button variant="ai" onClick={run} disabled={running}>{running ? <Loader2 className="animate-spin" /> : <ScanSearch />} Run analysis</Button>}
+        description="Transactions identified by connected anomaly analysis. Unusual does not mean fraud; review results carefully."
       />
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <KpiCard label="Transactions analyzed" value={state.transactions.length} icon={Radar} hint={lastRun ? `Last run ${lastRun.replace("T", " ")}` : "Demo dataset"} />
+        <KpiCard label="Flagged transactions" value={flagged.length} icon={Radar} />
         <KpiCard label="Flagged" value={flagged.length} icon={AlertOctagon} tone="ai" hint={`${((flagged.length / Math.max(1, state.transactions.length)) * 100).toFixed(1)}% of all`} />
         <KpiCard label="High-priority alerts" value={high.length} icon={AlertOctagon} tone={high.length ? "destructive" : "success"} hint="High severity, not yet reviewed" />
         <KpiCard label="Reviewed / dismissed" value={flagged.filter((t) => t.anomaly!.reviewStatus !== "new").length} icon={ShieldCheck} tone="success" hint={`${flagged.filter((t) => t.anomaly!.reviewStatus === "new").length} awaiting review`} />

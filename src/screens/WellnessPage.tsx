@@ -1,17 +1,12 @@
-import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
 import { Line, LineChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { format, subMonths } from "date-fns";
 import { CheckCircle2, Info, MinusCircle, PlusCircle, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { DemoBadge, EmptyState, PageIntro, ProgressBar, SectionCard, axisTick } from "@/components/common";
+import { EmptyState, PageIntro, ProgressBar, SectionCard, axisTick } from "@/components/common";
 import { useAppStore } from "@/store/AppStore";
 import { useWellness } from "@/hooks/useModels";
-import { wellnessInputFor } from "@/hooks/useFinanceData";
-import { computeWellness } from "@/mocks/wellnessEngine";
-import { TODAY } from "@/lib/period";
 import { cn } from "@/lib/utils";
 
 function ScoreRing({ score }: { score: number | null }) {
@@ -38,20 +33,17 @@ function ScoreRing({ score }: { score: number | null }) {
 export function WellnessPage() {
   const { state } = useAppStore();
   const { data, isLoading } = useWellness();
-  const history = useMemo(
-    () =>
-      [6, 5, 4, 3, 2, 1].map((k) => ({ label: format(subMonths(TODAY, k), "MMM"), score: computeWellness(wellnessInputFor(state, k)).overall })),
-    [state],
-  );
+  const history: { label: string; score: number | null }[] = [];
 
-  if (isLoading || !data) return <div className="space-y-6"><Skeleton className="h-16" /><Skeleton className="h-64" /><Skeleton className="h-64" /></div>;
+  if (!state.hydrated) return <div className="space-y-6"><Skeleton className="h-16" /><Skeleton className="h-64" /><Skeleton className="h-64" /></div>;
+  if (isLoading || !data) return <div className="space-y-6"><PageIntro title="Financial wellness" description="Your financial wellness summary will appear here when real financial data is available." /><SectionCard><EmptyState icon={Info} title="No wellness results available" description="A wellness score and guidance will appear after financial data is processed by a connected model." /></SectionCard></div>;
 
   const prev = history.at(-2)?.score;
   const change = data.overall != null && prev != null ? data.overall - prev : null;
 
   return (
     <div className="space-y-6">
-      <PageIntro title="Financial wellness" description="A guidance score built from your savings, spending, budgets, debt and goals." badge={<DemoBadge label="Demo scoring" tip="Uses a frontend copy of the rule-based score engine until the backend is connected." />} />
+      <PageIntro title="Financial wellness" description="A guidance score built from your savings, spending, budgets, debt and goals." />
 
       <div className="grid gap-6 xl:grid-cols-3">
         <SectionCard title="Your wellness score" description={`Based on the last 3 completed months`}>

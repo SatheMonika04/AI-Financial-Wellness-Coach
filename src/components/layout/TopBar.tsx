@@ -1,6 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { AlertTriangle, Bell, CalendarRange, LogOut, RotateCcw, Settings, Wallet } from "lucide-react";
-import { toast } from "sonner";
+import { AlertTriangle, Bell, CalendarRange, Settings, Wallet } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -98,7 +97,7 @@ function Notifications() {
 export function TopBar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const item = NAV_ITEMS.find((i) => (i.url === "/" ? path === "/" : path.startsWith(i.url)));
-  const { state, actions } = useAppStore();
+  const { state } = useAppStore();
 
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur sm:px-6">
@@ -128,7 +127,7 @@ export function TopBar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
-              <p className="text-sm font-semibold">{state.profile.name}</p>
+              <p className="text-sm font-semibold">{state.profile.name || "Profile not set"}</p>
               <p className="text-xs font-normal text-muted-foreground">{state.profile.email}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -136,18 +135,6 @@ export function TopBar() {
               <Link to="/settings">
                 <Settings /> Settings
               </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                actions.resetDemo();
-                toast.success("Demo data restored");
-              }}
-            >
-              <RotateCcw /> Reset demo data
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => toast.info("Demo mode", { description: "Authentication will be added with the backend." })}>
-              <LogOut /> Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

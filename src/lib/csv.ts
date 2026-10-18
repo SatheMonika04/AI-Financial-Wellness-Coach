@@ -47,7 +47,7 @@ export function transactionsToCsv(txs: Transaction[]) {
       t.type,
       t.type === "expense" ? -t.amount : t.amount,
       t.status,
-      t.prediction.confidence.toFixed(2),
+      t.prediction?.confidence.toFixed(2) ?? "",
       t.anomaly?.flagged ? t.anomaly.reviewStatus : "",
     ]
       .map(esc)

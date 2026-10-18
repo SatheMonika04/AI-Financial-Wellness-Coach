@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Repeat, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Amount, CategoryBadge, CategoryDot, DeltaBadge, KpiCard, MoneyTooltip, PageIntro, SectionCard, axisTick, inrAxis } from "@/components/common";
+import { Amount, CategoryBadge, CategoryDot, DeltaBadge, EmptyState, KpiCard, MoneyTooltip, PageIntro, SectionCard, axisTick, inrAxis } from "@/components/common";
 import { PeriodSelect } from "@/components/layout/TopBar";
 import { useAppStore } from "@/store/AppStore";
 import { usePeriodData } from "@/hooks/useFinanceData";
@@ -34,6 +34,10 @@ export function AnalyticsPage() {
     });
     return [...m.values()].sort((a, b) => b.amount - a.amount);
   }, [state.transactions]);
+
+  if (!state.hydrated || state.transactions.length === 0) {
+    return <div className="space-y-6"><PageIntro title="Analytics" description="Explore trends and patterns in your financial activity." /><SectionCard><EmptyState icon={BarChart3} title="No transaction data available" description="Analytics will appear here after transaction data is available." /></SectionCard></div>;
+  }
 
   const mom = categories.map((c) => {
     const p = prevCategories.find((x) => x.category === c.category)?.amount ?? 0;

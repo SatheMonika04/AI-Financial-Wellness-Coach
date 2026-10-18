@@ -16,9 +16,7 @@ import { useAppStore } from "@/store/AppStore";
 import { ALL_CATEGORIES } from "@/lib/categories";
 import { formatDate, formatINR } from "@/lib/format";
 import { monthlySeries } from "@/lib/analytics";
-import { transactionService } from "@/services/transactionService";
-import { anomalyService } from "@/services/anomalyService";
-import { Amount, CategoryBadge, ConfidenceMeter, DemoBadge, MoneyTooltip, ReviewBadge, SeverityBadge, axisTick, inrAxis } from "@/components/common";
+import { Amount, CategoryBadge, ConfidenceMeter, MoneyTooltip, ReviewBadge, SeverityBadge, axisTick, inrAxis } from "@/components/common";
 import type { AnomalyReviewStatus, Category } from "@/types";
 
 const schema = z.object({
@@ -62,10 +60,8 @@ export function TransactionDetailSheet({ txId, onOpenChange }: { txId: string | 
       description: v.description,
       category: v.category as Category,
       notes: v.notes,
-      prediction: { ...tx.prediction, userOverridden: v.category !== tx.prediction.predictedCategory, needsReview: false },
     };
     try {
-      await transactionService.update(tx.id, patch);
       actions.updateTransaction(tx.id, patch);
       toast.success("Transaction updated", { description: v.category !== tx.category ? `Category changed to ${v.category}` : undefined });
       form.reset(v);
@@ -78,7 +74,6 @@ export function TransactionDetailSheet({ txId, onOpenChange }: { txId: string | 
     if (!tx) return;
     setReviewing(status);
     try {
-      await anomalyService.updateReview(tx.id, status, note || undefined);
       actions.reviewAnomaly(tx.id, status, note || undefined);
       toast.success(status === "reviewed" ? "Marked as reviewed" : status === "dismissed" ? "Alert dismissed" : "Reopened");
       setNote("");
@@ -107,10 +102,10 @@ export function TransactionDetailSheet({ txId, onOpenChange }: { txId: string | 
             <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
               {[
                 ["Date & time", formatDate(tx.date, "d MMM yyyy, h:mm a")],
-                ["Payment method", tx.paymentMethod],
+                ["Payment method", tx.paymentMethod ?? "Not provided"],
                 ["Type", tx.type === "income" ? "Income" : "Expense"],
                 ["Status", tx.status],
-                ["Source", tx.source === "import" ? "Imported statement" : tx.source === "manual" ? "Manual" : "Demo data"],
+                ["Source", tx.source === "import" ? "Imported statement" : "Manual"],
                 ["Recurring", tx.recurring ? "Yes" : "No"],
               ].map(([k, v]) => (
                 <div key={k} className="rounded-lg bg-muted/60 px-3 py-2">
@@ -120,12 +115,11 @@ export function TransactionDetailSheet({ txId, onOpenChange }: { txId: string | 
               ))}
             </dl>
 
-            <div className="mt-5 rounded-xl border bg-ai-soft/40 p-4">
+            {tx.prediction && <div className="mt-5 rounded-xl border bg-ai-soft/40 p-4">
               <div className="mb-2 flex items-center justify-between">
                 <p className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                  <BrainCircuit className="size-4 text-ai" /> AI categorization
+                  <BrainCircuit className="size-4 text-ai" /> Model categorization
                 </p>
-                <DemoBadge />
               </div>
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span className="text-muted-foreground">
@@ -135,7 +129,7 @@ export function TransactionDetailSheet({ txId, onOpenChange }: { txId: string | 
               </div>
               {tx.prediction.userOverridden && <p className="mt-2 text-xs text-muted-foreground">You changed the category manually — this correction can be used as model feedback.</p>}
               {tx.prediction.needsReview && !tx.prediction.userOverridden && <p className="mt-2 text-xs font-medium text-warning-foreground">Low confidence — please confirm the category below.</p>}
-            </div>
+            </div>}
 
             {tx.anomaly?.flagged && (
               <div className="mt-5 rounded-xl border p-4">

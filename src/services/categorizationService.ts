@@ -1,6 +1,5 @@
 import type { CategoryPrediction } from "@/types";
-import { API_CONFIG, apiClient, ENDPOINTS } from "./apiClient";
-import { mockCategorizationService } from "@/mocks/services/categorizationService.mock";
+import { apiClient, ENDPOINTS } from "./apiClient";
 
 export interface CategorizationInput {
   description: string;
@@ -16,4 +15,4 @@ const http: CategorizationService = {
   categorize: (items) => apiClient.post(ENDPOINTS.categorize, { items }),
 };
 
-export const categorizationService = API_CONFIG.useMocks ? mockCategorizationService : http;
+export const categorizationService = http;

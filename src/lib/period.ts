@@ -1,8 +1,7 @@
 import { endOfDay, endOfMonth, format, startOfMonth, subMonths } from "date-fns";
 import type { PeriodKey } from "@/types";
 
-/** Fixed demo "today" keeps mock data deterministic across server and browser renders. */
-export const TODAY = new Date(2026, 9, 9, 18, 0);
+export const TODAY = new Date();
 
 export const PERIOD_OPTIONS: { value: PeriodKey; label: string; months: number }[] = [
   { value: "this_month", label: "This month", months: 1 },

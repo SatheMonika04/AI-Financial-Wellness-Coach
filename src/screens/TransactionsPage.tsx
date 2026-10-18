@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Amount, CategoryBadge, ConfidenceMeter, EmptyState, PageIntro, ReviewBadge, SectionCard } from "@/components/common";
+import { Amount, CategoryBadge, EmptyState, PageIntro, ReviewBadge, SectionCard } from "@/components/common";
 import { TransactionDetailSheet } from "@/components/transactions/TransactionDetailSheet";
 import { useAppStore } from "@/store/AppStore";
 import { ALL_CATEGORIES, PAYMENT_METHODS } from "@/lib/categories";
@@ -59,7 +59,7 @@ export function TransactionsPage({ search }: { search: TxSearch }) {
       if (method !== "all" && t.paymentMethod !== method) return false;
       if (anomaly === "flagged" && !t.anomaly?.flagged) return false;
       if (anomaly === "clear" && t.anomaly?.flagged) return false;
-      if (anomaly === "review" && !t.prediction.needsReview) return false;
+      if (anomaly === "review" && !t.prediction?.needsReview) return false;
       if (start && parseISO(t.date) < start) return false;
       return true;
     });
@@ -104,15 +104,15 @@ export function TransactionsPage({ search }: { search: TxSearch }) {
           <Filter value={anomaly} onChange={setAnomaly} options={[["all", "Any status"], ["flagged", "Unusual only"], ["clear", "Not flagged"], ["review", "Low confidence"]]} />
           <Button variant="ghost" onClick={clear} disabled={!active}><FilterX /> Clear</Button>
         </div>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-1 px-5 py-3 text-xs text-muted-foreground">
+        {state.hydrated && state.transactions.length > 0 && <div className="flex flex-wrap items-center gap-x-6 gap-y-1 px-5 py-3 text-xs text-muted-foreground">
           <span><span className="font-semibold text-foreground num">{filtered.length}</span> transactions</span>
           <span>Income <span className="font-semibold text-success num">{formatINR(t.income)}</span></span>
           <span>Expenses <span className="font-semibold text-foreground num">{formatINR(t.expenses)}</span></span>
-        </div>
+        </div>}
         {!state.hydrated ? (
           <div className="space-y-2 p-5">{Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-12" />)}</div>
         ) : rows.length === 0 ? (
-          <EmptyState icon={ReceiptText} title="No transactions match" description="Try adjusting the filters or clearing your search." action={active ? <Button size="sm" variant="outline" onClick={clear}>Clear filters</Button> : undefined} />
+          <EmptyState icon={ReceiptText} title={state.transactions.length === 0 ? "No transaction data is available yet" : "No transactions match"} description={state.transactions.length === 0 ? "Transaction records will appear here when available." : "Try adjusting the filters or clearing your search."} action={state.transactions.length === 0 ? undefined : active ? <Button size="sm" variant="outline" onClick={clear}>Clear filters</Button> : undefined} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1080px] text-sm">
@@ -124,7 +124,7 @@ export function TransactionsPage({ search }: { search: TxSearch }) {
                   <th className="px-3 py-2.5 font-medium">Payment</th>
                   <th className="px-3 py-2.5 font-medium">Type</th>
                   <th className="px-3 py-2.5 text-right font-medium"><button className="inline-flex items-center gap-1 hover:text-foreground" onClick={() => toggleSort("amount")}>Amount <ArrowDownUp className="size-3" /></button></th>
-                  <th className="px-3 py-2.5 font-medium">AI confidence</th>
+                  <th className="px-3 py-2.5 font-medium">Categorization</th>
                   <th className="px-3 py-2.5 font-medium">Anomaly</th>
                   <th className="px-5 py-2.5 text-right font-medium">Actions</th>
                 </tr>
@@ -138,10 +138,10 @@ export function TransactionsPage({ search }: { search: TxSearch }) {
                       <p className="truncate text-xs text-muted-foreground">{tx.description}</p>
                     </td>
                     <td className="px-3 py-3"><CategoryBadge category={tx.category} /></td>
-                    <td className="px-3 py-3 text-muted-foreground">{tx.paymentMethod}</td>
+                    <td className="px-3 py-3 text-muted-foreground">{tx.paymentMethod ?? "Not provided"}</td>
                     <td className="px-3 py-3"><span className={`text-xs font-semibold ${tx.type === "income" ? "text-success" : "text-muted-foreground"}`}>{tx.type === "income" ? "Income" : "Expense"}</span></td>
                     <td className="px-3 py-3 text-right"><Amount value={tx.amount} type={tx.type} /></td>
-                    <td className="px-3 py-3"><ConfidenceMeter value={tx.prediction.confidence} threshold={state.settings.financial.lowConfidenceThreshold} /></td>
+                    <td className="px-3 py-3 text-xs text-muted-foreground">{tx.prediction ? `${tx.prediction.predictedCategory} · model output` : "Not available"}</td>
                     <td className="px-3 py-3">{tx.anomaly?.flagged ? <ReviewBadge status={tx.anomaly.reviewStatus} /> : <span className="text-xs text-muted-foreground">—</span>}</td>
                     <td className="px-5 py-3 text-right"><Button size="sm" variant="ghost" onClick={() => setOpenTx(tx.id)}><Eye /> View</Button></td>
                   </tr>

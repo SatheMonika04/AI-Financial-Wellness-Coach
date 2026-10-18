@@ -10,8 +10,7 @@ import type {
   RecommendationDecision,
   Transaction,
 } from "@/types";
-import { generateDemoTransactions } from "@/mocks/transactions";
-import { DEFAULT_BUDGETS, DEFAULT_GOALS, DEFAULT_PROFILE, DEFAULT_SETTINGS } from "@/mocks/defaults";
+import { DEFAULT_SETTINGS } from "@/lib/defaults";
 import { storage } from "@/lib/storage";
 import { TODAY } from "@/lib/period";
 
@@ -42,15 +41,15 @@ type Action =
   | { type: "setSettings"; settings: AppSettings }
   | { type: "setPeriod"; period: PeriodKey }
   | { type: "markRead"; ids: string[] }
-  | { type: "reset"; empty?: boolean };
+  | { type: "reset" };
 
-function createInitial(empty = false): AppState {
+function createInitial(): AppState {
   return {
     hydrated: false,
-    transactions: empty ? [] : generateDemoTransactions(),
-    budgets: { ...DEFAULT_BUDGETS },
-    goals: empty ? [] : DEFAULT_GOALS,
-    profile: DEFAULT_PROFILE,
+    transactions: [],
+    budgets: {} as Record<BudgetCategory, number>,
+    goals: [],
+    profile: { name: "", email: "", monthlyIncome: 0 },
     settings: DEFAULT_SETTINGS,
     period: "this_month",
     decisions: {},
@@ -101,11 +100,12 @@ function reducer(state: AppState, a: Action): AppState {
     case "markRead":
       return { ...state, readNotifications: [...new Set([...state.readNotifications, ...a.ids])] };
     case "reset":
-      return { ...createInitial(a.empty), hydrated: true, settings: state.settings };
+      return { ...createInitial(), hydrated: true, settings: state.settings };
   }
 }
 
-const KEY = "state";
+// Ignore browser data persisted by the old demo version.
+const KEY = "state-v2";
 
 function useActions(dispatch: React.Dispatch<Action>) {
   return useMemo(
@@ -121,8 +121,7 @@ function useActions(dispatch: React.Dispatch<Action>) {
       setSettings: (settings: AppSettings) => dispatch({ type: "setSettings", settings }),
       setPeriod: (period: PeriodKey) => dispatch({ type: "setPeriod", period }),
       markRead: (ids: string[]) => dispatch({ type: "markRead", ids }),
-      resetDemo: () => dispatch({ type: "reset" }),
-      clearData: () => dispatch({ type: "reset", empty: true }),
+      clearData: () => dispatch({ type: "reset" }),
     }),
     [dispatch],
   );

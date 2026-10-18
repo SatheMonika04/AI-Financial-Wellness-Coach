@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { CategoryBadge, DemoBadge, KpiCard, MoneyTooltip, PageIntro, ProgressBar, SectionCard, axisTick, inrAxis } from "@/components/common";
+import { CategoryBadge, EmptyState, KpiCard, MoneyTooltip, PageIntro, ProgressBar, SectionCard, axisTick, inrAxis } from "@/components/common";
 import { useAppStore } from "@/store/AppStore";
 import { useBudgetRows, useModelFeatures } from "@/hooks/useFinanceData";
 import { useBudgetRecommendations } from "@/hooks/useModels";
@@ -48,9 +48,18 @@ export function BudgetsPage() {
 
   const chart = rows.map((r) => ({ label: r.category, Spent: r.spent, Budget: r.budget, Recommended: data?.recommendations.find((x) => x.category === r.category)?.recommended ?? 0 }));
 
+  if (!state.hydrated) return <div className="space-y-6"><Skeleton className="h-16" /><Skeleton className="h-64" /></div>;
+  if (!data) return (
+    <div className="space-y-6">
+      <PageIntro title="Budgets" description="Your budget summary will appear here when budget data is available." />
+      <ProfileCard />
+      <SectionCard><EmptyState icon={Wallet} title="No budget data available" description="Your budget summary will appear here when budget data is available." /></SectionCard>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
-      <PageIntro title="Smart budgets" description="Personalized category budgets from the budget recommendation model. Accept, adjust or reject each suggestion." badge={<DemoBadge label="Demo recommendations" tip="Recommendations come from demo heuristics until the saved recommendation model is connected via the backend." />} />
+      <PageIntro title="Smart budgets" description="Budget recommendations will appear once the required financial data and model are available." />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <KpiCard label="Monthly income" value={formatINR(state.profile.monthlyIncome)} icon={Wallet} tone="success" hint="From your profile" />

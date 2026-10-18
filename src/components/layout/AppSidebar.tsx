@@ -84,8 +84,8 @@ export function AppSidebar() {
           </Avatar>
           {!collapsed && (
             <span className="min-w-0 leading-tight">
-              <span className="block truncate text-sm font-semibold text-sidebar-foreground">{state.profile.name}</span>
-              <span className="block truncate text-[11px] text-muted-foreground">Demo workspace</span>
+              <span className="block truncate text-sm font-semibold text-sidebar-foreground">{state.profile.name || "Your profile"}</span>
+              <span className="block truncate text-[11px] text-muted-foreground">Personal workspace</span>
             </span>
           )}
         </Link>

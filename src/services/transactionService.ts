@@ -1,6 +1,5 @@
 import type { ImportCandidate, StatementParseResult, Transaction } from "@/types";
-import { API_CONFIG, apiClient, ENDPOINTS } from "./apiClient";
-import { mockTransactionService } from "@/mocks/services/transactionService.mock";
+import { apiClient, ENDPOINTS } from "./apiClient";
 
 export interface TransactionService {
   update(id: string, patch: Partial<Transaction>): Promise<Partial<Transaction>>;
@@ -18,4 +17,4 @@ const httpTransactionService: TransactionService = {
   importTransactions: (rows) => apiClient.post(ENDPOINTS.importTransactions, { rows }),
 };
 
-export const transactionService: TransactionService = API_CONFIG.useMocks ? mockTransactionService : httpTransactionService;
+export const transactionService: TransactionService = httpTransactionService;

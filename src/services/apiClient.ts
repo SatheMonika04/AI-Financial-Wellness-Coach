@@ -1,11 +1,9 @@
-// Shared HTTP client for the future FastAPI backend.
-// Configure with VITE_API_BASE_URL (e.g. http://localhost:8000/api) and VITE_USE_MOCKS=false.
+// HTTP client boundary for a future backend integration. No request runs until a service is used.
 
 const env = import.meta.env as Record<string, string | undefined>;
 
 export const API_CONFIG = {
   baseUrl: (env.VITE_API_BASE_URL ?? "").replace(/\/$/, ""),
-  useMocks: !env.VITE_API_BASE_URL || env.VITE_USE_MOCKS !== "false",
   timeoutMs: 20000,
 };
 

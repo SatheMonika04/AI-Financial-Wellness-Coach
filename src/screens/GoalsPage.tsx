@@ -15,7 +15,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState, KpiCard, PageIntro, ProgressBar } from "@/components/common";
 import { useAppStore } from "@/store/AppStore";
-import { goalService } from "@/services/goalService";
 import { formatINR, formatPct } from "@/lib/format";
 import { TODAY } from "@/lib/period";
 import type { FinancialGoal, GoalType } from "@/types";
@@ -56,7 +55,6 @@ export function GoalsPage() {
 
   const toggleComplete = async (g: FinancialGoal) => {
     const next = { ...g, completed: !g.completed, currentAmount: !g.completed ? g.targetAmount : g.currentAmount };
-    await goalService.update(next);
     actions.upsertGoal(next);
     toast.success(next.completed ? `🎉 "${g.name}" completed` : `"${g.name}" reopened`);
   };
@@ -64,12 +62,12 @@ export function GoalsPage() {
   return (
     <div className="space-y-6">
       <PageIntro title="Financial goals" description="Track what you're saving for and how much to set aside each month." actions={<Button onClick={() => setEditing("new")}><Plus /> Add goal</Button>} />
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {state.goals.length > 0 && <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <KpiCard label="Active goals" value={active.length} icon={Target} tone="ai" hint={`${state.goals.length - active.length} completed`} />
         <KpiCard label="Total saved" value={formatINR(saved)} icon={PiggyBank} tone="success" />
         <KpiCard label="Remaining to target" value={formatINR(Math.max(0, target - active.reduce((s, g) => s + g.currentAmount, 0)))} icon={Target} />
-        <KpiCard label="Suggested monthly" value={formatINR(monthly)} icon={CalendarDays} tone="ai" hint={`${formatPct(monthly / (state.profile.monthlyIncome || 1))} of income`} />
-      </div>
+        <KpiCard label="Suggested monthly" value={formatINR(monthly)} icon={CalendarDays} tone="ai" hint={state.profile.monthlyIncome > 0 ? `${formatPct(monthly / state.profile.monthlyIncome)} of income` : "Income not provided"} />
+      </div>}
 
       {state.goals.length === 0 ? (
         <div className="surface-card"><EmptyState icon={Target} title="No goals yet" description="Create your first goal — an emergency fund is a great start." action={<Button onClick={() => setEditing("new")}><Plus /> Add goal</Button>} /></div>
@@ -120,7 +118,7 @@ export function GoalsPage() {
           <AlertDialogHeader><AlertDialogTitle>Remove "{deleting?.name}"?</AlertDialogTitle><AlertDialogDescription>This goal and its progress will be removed.</AlertDialogDescription></AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={async () => { if (!deleting) return; await goalService.remove(deleting.id); actions.removeGoal(deleting.id); toast.success("Goal removed"); setDeleting(null); }}>Remove</AlertDialogAction>
+            <AlertDialogAction onClick={() => { if (!deleting) return; actions.removeGoal(deleting.id); toast.success("Goal removed"); setDeleting(null); }}>Remove</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -133,12 +131,11 @@ function GoalDialog({ goal, onClose }: { goal: FinancialGoal | null | "new"; onC
   const g = goal && goal !== "new" ? goal : null;
   const form = useForm<Form>({
     resolver: zodResolver(schema) as never,
-    values: g ? { name: g.name, type: g.type, targetAmount: g.targetAmount, currentAmount: g.currentAmount, targetDate: g.targetDate } : { name: "", type: "savings", targetAmount: 50000, currentAmount: 0, targetDate: "2027-06-30" },
+    values: g ? { name: g.name, type: g.type, targetAmount: g.targetAmount, currentAmount: g.currentAmount, targetDate: g.targetDate } : { name: "", type: "savings", targetAmount: 0, currentAmount: 0, targetDate: "" },
   });
   const e = form.formState.errors;
-  const submit = async (v: Form) => {
+  const submit = (v: Form) => {
     const next: FinancialGoal = g ? { ...g, ...v, completed: v.currentAmount >= v.targetAmount } : { id: `goal_${Date.now().toString(36)}`, ...v, completed: v.currentAmount >= v.targetAmount, createdAt: format(TODAY, "yyyy-MM-dd") };
-    await (g ? goalService.update(next) : goalService.create(next));
     actions.upsertGoal(next);
     toast.success(g ? "Goal updated" : "Goal created");
     onClose();

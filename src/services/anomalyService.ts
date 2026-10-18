@@ -1,6 +1,5 @@
 import type { AnomalyReviewStatus, AnomalyRunSummary, Transaction } from "@/types";
-import { API_CONFIG, apiClient, ENDPOINTS } from "./apiClient";
-import { mockAnomalyService } from "@/mocks/services/anomalyService.mock";
+import { apiClient, ENDPOINTS } from "./apiClient";
 
 export interface AnomalyService {
   runDetection(transactions: Transaction[]): Promise<AnomalyRunSummary>;
@@ -12,4 +11,4 @@ const http: AnomalyService = {
   updateReview: (id, status, note) => apiClient.patch(ENDPOINTS.anomalyReview(id), { status, note }),
 };
 
-export const anomalyService = API_CONFIG.useMocks ? mockAnomalyService : http;
+export const anomalyService = http;
