@@ -15,7 +15,9 @@ import { Route as AnomaliesRouteImport } from './routes/anomalies'
 import { Route as BudgetsRouteImport } from './routes/budgets'
 import { Route as ForecastRouteImport } from './routes/forecast'
 import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as UploadRouteImport } from './routes/upload'
 import { Route as WellnessRouteImport } from './routes/wellness'
@@ -50,9 +52,19 @@ const GoalsRoute = GoalsRouteImport.update({
   path: '/goals',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TransactionsRoute = TransactionsRouteImport.update({
@@ -78,7 +90,9 @@ export interface FileRoutesByFullPath {
   '/budgets': typeof BudgetsRoute
   '/forecast': typeof ForecastRoute
   '/goals': typeof GoalsRoute
+  '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/transactions': typeof TransactionsRoute
   '/upload': typeof UploadRoute
   '/wellness': typeof WellnessRoute
@@ -90,7 +104,9 @@ export interface FileRoutesByTo {
   '/budgets': typeof BudgetsRoute
   '/forecast': typeof ForecastRoute
   '/goals': typeof GoalsRoute
+  '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/transactions': typeof TransactionsRoute
   '/upload': typeof UploadRoute
   '/wellness': typeof WellnessRoute
@@ -103,7 +119,9 @@ export interface FileRoutesById {
   '/budgets': typeof BudgetsRoute
   '/forecast': typeof ForecastRoute
   '/goals': typeof GoalsRoute
+  '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/transactions': typeof TransactionsRoute
   '/upload': typeof UploadRoute
   '/wellness': typeof WellnessRoute
@@ -117,7 +135,9 @@ export interface FileRouteTypes {
     | '/budgets'
     | '/forecast'
     | '/goals'
+    | '/login'
     | '/settings'
+    | '/signup'
     | '/transactions'
     | '/upload'
     | '/wellness'
@@ -129,7 +149,9 @@ export interface FileRouteTypes {
     | '/budgets'
     | '/forecast'
     | '/goals'
+    | '/login'
     | '/settings'
+    | '/signup'
     | '/transactions'
     | '/upload'
     | '/wellness'
@@ -141,7 +163,9 @@ export interface FileRouteTypes {
     | '/budgets'
     | '/forecast'
     | '/goals'
+    | '/login'
     | '/settings'
+    | '/signup'
     | '/transactions'
     | '/upload'
     | '/wellness'
@@ -154,7 +178,9 @@ export interface RootRouteChildren {
   BudgetsRoute: typeof BudgetsRoute
   ForecastRoute: typeof ForecastRoute
   GoalsRoute: typeof GoalsRoute
+  LoginRoute: typeof LoginRoute
   SettingsRoute: typeof SettingsRoute
+  SignupRoute: typeof SignupRoute
   TransactionsRoute: typeof TransactionsRoute
   UploadRoute: typeof UploadRoute
   WellnessRoute: typeof WellnessRoute
@@ -204,11 +230,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GoalsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/transactions': {
@@ -242,7 +282,9 @@ const rootRouteChildren: RootRouteChildren = {
   BudgetsRoute: BudgetsRoute,
   ForecastRoute: ForecastRoute,
   GoalsRoute: GoalsRoute,
+  LoginRoute: LoginRoute,
   SettingsRoute: SettingsRoute,
+  SignupRoute: SignupRoute,
   TransactionsRoute: TransactionsRoute,
   UploadRoute: UploadRoute,
   WellnessRoute: WellnessRoute,
