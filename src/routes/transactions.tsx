@@ -5,9 +5,15 @@ export const Route = createFileRoute("/transactions")({
   head: () => ({
     meta: [
       { title: "Transactions — MoneyMind AI" },
-      { name: "description", content: "Search, filter, recategorize and export your transactions." },
+      {
+        name: "description",
+        content: "Search, filter, recategorize and export your transactions.",
+      },
       { property: "og:title", content: "Transactions — MoneyMind AI" },
-      { property: "og:description", content: "Search, filter, recategorize and export your transactions." },
+      {
+        property: "og:description",
+        content: "Search, filter, recategorize and export your transactions.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

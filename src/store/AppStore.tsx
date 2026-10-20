@@ -62,9 +62,17 @@ function reducer(state: AppState, a: Action): AppState {
     case "hydrate":
       return { ...state, ...a.payload, hydrated: true };
     case "updateTransaction":
-      return { ...state, transactions: state.transactions.map((t) => (t.id === a.id ? { ...t, ...a.patch } : t)) };
+      return {
+        ...state,
+        transactions: state.transactions.map((t) => (t.id === a.id ? { ...t, ...a.patch } : t)),
+      };
     case "addTransactions":
-      return { ...state, transactions: [...a.items, ...state.transactions].sort((x, y) => (x.date < y.date ? 1 : -1)) };
+      return {
+        ...state,
+        transactions: [...a.items, ...state.transactions].sort((x, y) =>
+          x.date < y.date ? 1 : -1,
+        ),
+      };
     case "reviewAnomaly":
       return {
         ...state,
@@ -75,7 +83,10 @@ function reducer(state: AppState, a: Action): AppState {
                 anomaly: {
                   ...t.anomaly,
                   reviewStatus: a.status,
-                  reviewHistory: [...t.anomaly.reviewHistory, { at: format(TODAY, "yyyy-MM-dd'T'HH:mm"), action: a.status, note: a.note }],
+                  reviewHistory: [
+                    ...t.anomaly.reviewHistory,
+                    { at: format(TODAY, "yyyy-MM-dd'T'HH:mm"), action: a.status, note: a.note },
+                  ],
                 },
               }
             : t,
@@ -87,7 +98,12 @@ function reducer(state: AppState, a: Action): AppState {
       return { ...state, decisions: { ...state.decisions, [a.category]: a.decision } };
     case "upsertGoal": {
       const exists = state.goals.some((g) => g.id === a.goal.id);
-      return { ...state, goals: exists ? state.goals.map((g) => (g.id === a.goal.id ? a.goal : g)) : [a.goal, ...state.goals] };
+      return {
+        ...state,
+        goals: exists
+          ? state.goals.map((g) => (g.id === a.goal.id ? a.goal : g))
+          : [a.goal, ...state.goals],
+      };
     }
     case "removeGoal":
       return { ...state, goals: state.goals.filter((g) => g.id !== a.id) };
@@ -110,11 +126,15 @@ const KEY = "state-v2";
 function useActions(dispatch: React.Dispatch<Action>) {
   return useMemo(
     () => ({
-      updateTransaction: (id: string, patch: Partial<Transaction>) => dispatch({ type: "updateTransaction", id, patch }),
+      updateTransaction: (id: string, patch: Partial<Transaction>) =>
+        dispatch({ type: "updateTransaction", id, patch }),
       addTransactions: (items: Transaction[]) => dispatch({ type: "addTransactions", items }),
-      reviewAnomaly: (id: string, status: AnomalyReviewStatus, note?: string) => dispatch({ type: "reviewAnomaly", id, status, note }),
-      setBudget: (category: BudgetCategory, amount: number) => dispatch({ type: "setBudget", category, amount }),
-      setDecision: (category: BudgetCategory, decision: RecommendationDecision) => dispatch({ type: "setDecision", category, decision }),
+      reviewAnomaly: (id: string, status: AnomalyReviewStatus, note?: string) =>
+        dispatch({ type: "reviewAnomaly", id, status, note }),
+      setBudget: (category: BudgetCategory, amount: number) =>
+        dispatch({ type: "setBudget", category, amount }),
+      setDecision: (category: BudgetCategory, decision: RecommendationDecision) =>
+        dispatch({ type: "setDecision", category, decision }),
       upsertGoal: (goal: FinancialGoal) => dispatch({ type: "upsertGoal", goal }),
       removeGoal: (id: string) => dispatch({ type: "removeGoal", id }),
       setProfile: (profile: FinancialProfile) => dispatch({ type: "setProfile", profile }),

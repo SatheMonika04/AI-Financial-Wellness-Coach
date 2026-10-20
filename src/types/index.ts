@@ -17,7 +17,8 @@ export type Category = ExpenseCategory | "Income";
 export type BudgetCategory = ExpenseCategory | "Savings";
 
 export type TransactionType = "income" | "expense";
-export type PaymentMethod = "UPI" | "Credit Card" | "Debit Card" | "Net Banking" | "Cash" | "Auto Debit";
+export type PaymentMethod =
+  "UPI" | "Credit Card" | "Debit Card" | "Net Banking" | "Cash" | "Auto Debit";
 export type TransactionStatus = "completed" | "pending" | "failed";
 export type DataSource = "model";
 
@@ -245,4 +246,5 @@ export interface AppSettings {
   };
 }
 
-export type PeriodKey = "this_month" | "last_month" | "last_3_months" | "last_6_months" | "last_12_months";
+export type PeriodKey =
+  "this_month" | "last_month" | "last_3_months" | "last_6_months" | "last_12_months";

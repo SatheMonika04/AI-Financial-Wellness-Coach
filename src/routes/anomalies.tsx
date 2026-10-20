@@ -7,7 +7,10 @@ export const Route = createFileRoute("/anomalies")({
       { title: "Unusual Transactions — MoneyMind AI" },
       { name: "description", content: "Review transactions that differ from your usual patterns." },
       { property: "og:title", content: "Unusual Transactions — MoneyMind AI" },
-      { property: "og:description", content: "Review transactions that differ from your usual patterns." },
+      {
+        property: "og:description",
+        content: "Review transactions that differ from your usual patterns.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

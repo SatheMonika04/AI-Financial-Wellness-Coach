@@ -36,7 +36,18 @@ const esc = (v: string | number) => {
 };
 
 export function transactionsToCsv(txs: Transaction[]) {
-  const header = ["Date", "Merchant", "Description", "Category", "Payment method", "Type", "Amount (INR)", "Status", "AI confidence", "Anomaly"];
+  const header = [
+    "Date",
+    "Merchant",
+    "Description",
+    "Category",
+    "Payment method",
+    "Type",
+    "Amount (INR)",
+    "Status",
+    "AI confidence",
+    "Anomaly",
+  ];
   const lines = txs.map((t) =>
     [
       t.date.replace("T", " "),

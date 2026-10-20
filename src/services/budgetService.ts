@@ -1,4 +1,9 @@
-import type { BudgetCategory, BudgetModelFeatures, BudgetRecommendationResponse, FinancialProfile } from "@/types";
+import type {
+  BudgetCategory,
+  BudgetModelFeatures,
+  BudgetRecommendationResponse,
+  FinancialProfile,
+} from "@/types";
 import { apiClient, ENDPOINTS } from "./apiClient";
 
 export interface BudgetRecommendationRequest {

@@ -7,7 +7,10 @@ export const Route = createFileRoute("/settings")({
       { title: "Settings — MoneyMind AI" },
       { name: "description", content: "Profile, preferences, notifications and data settings." },
       { property: "og:title", content: "Settings — MoneyMind AI" },
-      { property: "og:description", content: "Profile, preferences, notifications and data settings." },
+      {
+        property: "og:description",
+        content: "Profile, preferences, notifications and data settings.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

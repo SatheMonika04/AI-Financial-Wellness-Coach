@@ -12,7 +12,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <AppSidebar />
           <SidebarInset className="min-w-0 bg-background">
             <TopBar />
-            <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:px-6 lg:py-8">{children}</main>
+            <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:px-6 lg:py-8">
+              {children}
+            </main>
           </SidebarInset>
         </div>
       </SidebarProvider>

@@ -1,16 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { OverviewPage } from "@/screens/OverviewPage";
+import { LandingPage } from "@/screens/LandingPage";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Overview — MoneyMind AI" },
-      { name: "description", content: "Your income, spending, budgets and AI insights at a glance." },
-      { property: "og:title", content: "Overview — MoneyMind AI" },
-      { property: "og:description", content: "Your income, spending, budgets and AI insights at a glance." },
+      { title: "MoneyMind AI — Financial wellness coach" },
+      {
+        name: "description",
+        content: "A clearer view of your money, goals, and long-term wellbeing.",
+      },
+      { property: "og:title", content: "MoneyMind AI — Financial wellness coach" },
+      {
+        property: "og:description",
+        content: "A clearer view of your money, goals, and long-term wellbeing.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: OverviewPage,
+  component: LandingPage,
 });

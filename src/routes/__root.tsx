@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -14,6 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppStoreProvider } from "@/store/AppStore";
 import { AppLayout } from "@/layouts/AppLayout";
+import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -85,7 +87,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Understand your money. Improve your financial future." },
       { name: "author", content: "MoneyMind AI" },
       { property: "og:title", content: "MoneyMind AI — AI Financial Wellness Coach" },
-      { property: "og:description", content: "Understand your money. Improve your financial future." },
+      {
+        property: "og:description",
+        content: "Understand your money. Improve your financial future.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -122,13 +127,21 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isPublicRoute = ["/", "/login", "/signup"].includes(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
       <AppStoreProvider>
-        <AppLayout>
-          <Outlet />
-        </AppLayout>
+        {isPublicRoute ? (
+          <PublicLayout>
+            <Outlet />
+          </PublicLayout>
+        ) : (
+          <AppLayout>
+            <Outlet />
+          </AppLayout>
+        )}
         <Toaster richColors position="bottom-right" />
       </AppStoreProvider>
     </QueryClientProvider>

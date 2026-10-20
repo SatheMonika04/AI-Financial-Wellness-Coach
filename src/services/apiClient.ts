@@ -17,7 +17,12 @@ export class ApiError extends Error {
   }
 }
 
-type RequestOptions = { method?: string; body?: unknown; formData?: FormData; signal?: AbortSignal };
+type RequestOptions = {
+  method?: string;
+  body?: unknown;
+  formData?: FormData;
+  signal?: AbortSignal;
+};
 
 async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   const controller = new AbortController();
@@ -29,8 +34,17 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
       body: opts.formData ?? (opts.body !== undefined ? JSON.stringify(opts.body) : undefined),
       signal: opts.signal ?? controller.signal,
     });
-    const data = res.headers.get("content-type")?.includes("json") ? await res.json() : await res.text();
-    if (!res.ok) throw new ApiError(typeof data === "object" && data && "detail" in data ? String((data as { detail: unknown }).detail) : res.statusText, res.status, data);
+    const data = res.headers.get("content-type")?.includes("json")
+      ? await res.json()
+      : await res.text();
+    if (!res.ok)
+      throw new ApiError(
+        typeof data === "object" && data && "detail" in data
+          ? String((data as { detail: unknown }).detail)
+          : res.statusText,
+        res.status,
+        data,
+      );
     return data as T;
   } finally {
     clearTimeout(timer);
@@ -60,5 +74,3 @@ export const ENDPOINTS = {
   goals: "/goals",
   goal: (id: string) => `/goals/${id}`,
 };
-
-export const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));

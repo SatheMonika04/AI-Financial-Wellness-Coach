@@ -7,8 +7,10 @@ export interface AnomalyService {
 }
 
 const http: AnomalyService = {
-  runDetection: (transactions) => apiClient.post(ENDPOINTS.anomalies, { transaction_ids: transactions.map((t) => t.id) }),
-  updateReview: (id, status, note) => apiClient.patch(ENDPOINTS.anomalyReview(id), { status, note }),
+  runDetection: (transactions) =>
+    apiClient.post(ENDPOINTS.anomalies, { transaction_ids: transactions.map((t) => t.id) }),
+  updateReview: (id, status, note) =>
+    apiClient.patch(ENDPOINTS.anomalyReview(id), { status, note }),
 };
 
 export const anomalyService = http;

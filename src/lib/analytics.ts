@@ -50,18 +50,26 @@ export function byCategory(txs: Transaction[]) {
 }
 
 export function monthlySeries(txs: Transaction[], months: number, today = TODAY) {
-  const out: { key: string; label: string; income: number; expenses: number; savings: number }[] = [];
+  const out: { key: string; label: string; income: number; expenses: number; savings: number }[] =
+    [];
   for (let i = months - 1; i >= 0; i--) {
     const m = subMonths(today, i);
     const t = totals(inRange(txs, startOfMonth(m), endOfMonth(m)));
-    out.push({ key: format(m, "yyyy-MM"), label: format(m, "MMM yy"), income: t.income, expenses: t.expenses, savings: t.savings });
+    out.push({
+      key: format(m, "yyyy-MM"),
+      label: format(m, "MMM yy"),
+      income: t.income,
+      expenses: t.expenses,
+      savings: t.savings,
+    });
   }
   return out;
 }
 
 export function dailySeries(txs: Transaction[], start: Date, end: Date) {
   const map = new Map<string, number>();
-  for (const t of txs) if (isExpense(t)) map.set(t.date.slice(0, 10), (map.get(t.date.slice(0, 10)) ?? 0) + t.amount);
+  for (const t of txs)
+    if (isExpense(t)) map.set(t.date.slice(0, 10), (map.get(t.date.slice(0, 10)) ?? 0) + t.amount);
   return eachDayOfInterval({ start, end }).map((d) => {
     const key = format(d, "yyyy-MM-dd");
     return { date: key, label: format(d, "d MMM"), amount: map.get(key) ?? 0 };
@@ -89,7 +97,8 @@ export function dayOfWeekSpend(txs: Transaction[], start: Date, end: Date) {
   const dayCounts = Array(7).fill(0);
   days.forEach((d) => dayCounts[getDay(d)]++);
   const totalsArr = Array(7).fill(0);
-  for (const t of txs) if (isExpense(t) && !t.recurring) totalsArr[getDay(parseISO(t.date))] += t.amount;
+  for (const t of txs)
+    if (isExpense(t) && !t.recurring) totalsArr[getDay(parseISO(t.date))] += t.amount;
   const rows = [1, 2, 3, 4, 5, 6, 0].map((i) => ({
     day: DOW[i],
     weekend: i === 0 || i === 6,

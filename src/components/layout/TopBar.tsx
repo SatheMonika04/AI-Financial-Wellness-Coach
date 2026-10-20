@@ -3,7 +3,13 @@ import { AlertTriangle, Bell, CalendarRange, Settings, Wallet } from "lucide-rea
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,12 +64,22 @@ function Notifications() {
       <PopoverContent align="end" className="w-80 p-0">
         <div className="flex items-center justify-between border-b px-4 py-3">
           <p className="text-sm font-semibold">Notifications</p>
-          <Button variant="link" size="sm" className="h-auto p-0 text-xs" disabled={!unread.length} onClick={() => actions.markRead(list.map((n) => n.id))}>
+          <Button
+            variant="link"
+            size="sm"
+            className="h-auto p-0 text-xs"
+            disabled={!unread.length}
+            onClick={() => actions.markRead(list.map((n) => n.id))}
+          >
             Mark all read
           </Button>
         </div>
         <div className="max-h-80 overflow-y-auto">
-          {list.length === 0 && <p className="px-4 py-8 text-center text-xs text-muted-foreground">You're all caught up.</p>}
+          {list.length === 0 && (
+            <p className="px-4 py-8 text-center text-xs text-muted-foreground">
+              You're all caught up.
+            </p>
+          )}
           {list.map((n) => {
             const isUnread = unread.some((u) => u.id === n.id);
             return (
@@ -75,8 +91,14 @@ function Notifications() {
                   navigate({ to: n.link });
                 }}
               >
-                <span className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg ${n.kind === "anomaly" ? "bg-ai-soft text-ai" : "bg-warning-soft text-warning-foreground"}`}>
-                  {n.kind === "anomaly" ? <AlertTriangle className="size-3.5" /> : <Wallet className="size-3.5" />}
+                <span
+                  className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg ${n.kind === "anomaly" ? "bg-ai-soft text-ai" : "bg-warning-soft text-warning-foreground"}`}
+                >
+                  {n.kind === "anomaly" ? (
+                    <AlertTriangle className="size-3.5" />
+                  ) : (
+                    <Wallet className="size-3.5" />
+                  )}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2 text-xs font-semibold text-foreground">
@@ -96,19 +118,26 @@ function Notifications() {
 
 export function TopBar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const item = NAV_ITEMS.find((i) => (i.url === "/" ? path === "/" : path.startsWith(i.url)));
+  const item = NAV_ITEMS.find((i) => path.startsWith(i.url));
   const { state } = useAppStore();
 
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur sm:px-6">
       <SidebarTrigger className="-ml-1 shrink-0" />
       <div className="min-w-0 flex-1">
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">MoneyMind</Link>
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-1.5 text-[11px] text-muted-foreground"
+        >
+          <Link to="/overview" className="hover:text-foreground">
+            MoneyMind
+          </Link>
           <span>/</span>
           <span className="truncate">{item?.group ?? "Page"}</span>
         </nav>
-        <p className="font-display truncate text-[15px] font-semibold text-foreground">{item?.title ?? "MoneyMind AI"}</p>
+        <p className="font-display truncate text-[15px] font-semibold text-foreground">
+          {item?.title ?? "MoneyMind AI"}
+        </p>
       </div>
       <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
         {item?.showPeriod && (
@@ -119,9 +148,14 @@ export function TopBar() {
         <Notifications />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="Profile menu">
+            <button
+              className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Profile menu"
+            >
               <Avatar className="size-9">
-                <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">{initials(state.profile.name)}</AvatarFallback>
+                <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
+                  {initials(state.profile.name)}
+                </AvatarFallback>
               </Avatar>
             </button>
           </DropdownMenuTrigger>

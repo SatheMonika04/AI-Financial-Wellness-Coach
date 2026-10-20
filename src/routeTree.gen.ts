@@ -16,6 +16,7 @@ import { Route as BudgetsRouteImport } from './routes/budgets'
 import { Route as ForecastRouteImport } from './routes/forecast'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TransactionsRouteImport } from './routes/transactions'
@@ -57,6 +58,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OverviewRoute = OverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/forecast': typeof ForecastRoute
   '/goals': typeof GoalsRoute
   '/login': typeof LoginRoute
+  '/overview': typeof OverviewRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/transactions': typeof TransactionsRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/forecast': typeof ForecastRoute
   '/goals': typeof GoalsRoute
   '/login': typeof LoginRoute
+  '/overview': typeof OverviewRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/transactions': typeof TransactionsRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/forecast': typeof ForecastRoute
   '/goals': typeof GoalsRoute
   '/login': typeof LoginRoute
+  '/overview': typeof OverviewRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/transactions': typeof TransactionsRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/forecast'
     | '/goals'
     | '/login'
+    | '/overview'
     | '/settings'
     | '/signup'
     | '/transactions'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/forecast'
     | '/goals'
     | '/login'
+    | '/overview'
     | '/settings'
     | '/signup'
     | '/transactions'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/forecast'
     | '/goals'
     | '/login'
+    | '/overview'
     | '/settings'
     | '/signup'
     | '/transactions'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   ForecastRoute: typeof ForecastRoute
   GoalsRoute: typeof GoalsRoute
   LoginRoute: typeof LoginRoute
+  OverviewRoute: typeof OverviewRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   TransactionsRoute: typeof TransactionsRoute
@@ -237,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/overview': {
+      id: '/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof OverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -283,6 +303,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForecastRoute: ForecastRoute,
   GoalsRoute: GoalsRoute,
   LoginRoute: LoginRoute,
+  OverviewRoute: OverviewRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   TransactionsRoute: TransactionsRoute,
