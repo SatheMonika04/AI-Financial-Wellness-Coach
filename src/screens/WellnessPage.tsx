@@ -60,7 +60,7 @@ function ScoreRing({ score }: { score: number | null }) {
 
 export function WellnessPage() {
   const { state } = useAppStore();
-  const { data, isLoading } = useWellness();
+  const { data, isLoading, isError, error } = useWellness();
   const history: { label: string; score: number | null }[] = [];
 
   if (!state.hydrated)
@@ -69,6 +69,22 @@ export function WellnessPage() {
         <Skeleton className="h-16" />
         <Skeleton className="h-64" />
         <Skeleton className="h-64" />
+      </div>
+    );
+  if (isError)
+    return (
+      <div className="space-y-6">
+        <PageIntro
+          title="Financial wellness"
+          description="Wellness could not be loaded from your account data."
+        />
+        <SectionCard>
+          <EmptyState
+            icon={Info}
+            title="Wellness is unavailable"
+            description={error?.message ?? "Please refresh and try again."}
+          />
+        </SectionCard>
       </div>
     );
   if (isLoading || !data)

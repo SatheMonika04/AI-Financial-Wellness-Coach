@@ -14,10 +14,9 @@ import {
   Bar,
   BarChart,
 } from "recharts";
-import { endOfMonth, format, parseISO, startOfMonth, subDays } from "date-fns";
+import { endOfMonth, format, parseISO, startOfMonth, subDays, subMonths } from "date-fns";
 import {
   CalendarClock,
-  Cpu,
   History,
   Info,
   Loader2,
@@ -49,7 +48,7 @@ import { TODAY } from "@/lib/period";
 
 export function ForecastPage() {
   const { state } = useAppStore();
-  const { data, isLoading, isFetching, refetch, history } = useForecast(30);
+  const { data, isLoading, isFetching, isError, error, refetch, history } = useForecast(30);
   const [view, setView] = useState("60");
 
   const chart = useMemo(() => {
@@ -86,6 +85,20 @@ export function ForecastPage() {
       </div>
     );
 
+  if (isError)
+    return (
+      <div>
+        <PageIntro title="Spending forecast" />
+        <SectionCard>
+          <EmptyState
+            icon={Info}
+            title="Forecast unavailable"
+            description={error?.message ?? "The spending baseline could not be loaded."}
+          />
+        </SectionCard>
+      </div>
+    );
+
   if (!data || data.status === "insufficient_data") {
     return (
       <div>
@@ -94,7 +107,7 @@ export function ForecastPage() {
           <EmptyState
             icon={History}
             title="Forecasts aren’t available yet"
-            description="Forecasts will appear when the required financial data and forecasting model are available."
+            description="Add at least 30 days of expense history to calculate a spending baseline."
             action={
               <Button asChild>
                 <Link to="/upload">
@@ -114,8 +127,12 @@ export function ForecastPage() {
   const last30 = history.slice(-30).reduce((s, p) => s + p.amount, 0);
   const monthEnd = format(endOfMonth(TODAY), "yyyy-MM-dd");
   const mtd = totals(inRange(state.transactions, startOfMonth(TODAY), TODAY));
+  const previousThreeMonths = totals(
+    inRange(state.transactions, startOfMonth(subMonths(TODAY, 3)), endOfMonth(subMonths(TODAY, 1))),
+  );
   const rest = data.points.filter((p) => p.date <= monthEnd).reduce((s, p) => s + p.predicted, 0);
   const projected = mtd.expenses + rest;
+  const projectedIncome = Math.max(mtd.income, previousThreeMonths.income / 3);
   const lastMonth = totals(
     inRange(
       state.transactions,
@@ -130,7 +147,7 @@ export function ForecastPage() {
     <div className="space-y-6">
       <PageIntro
         title="Spending forecast"
-        description="Projected daily spending based on your historical patterns."
+        description="Daily spending baseline projected from your recent transaction history."
         actions={
           <Button variant="outline" onClick={() => refetch()} disabled={isFetching}>
             {isFetching ? <Loader2 className="animate-spin" /> : <RefreshCw />} Refresh forecast
@@ -167,10 +184,10 @@ export function ForecastPage() {
         />
         <KpiCard
           label="Projected savings"
-          value={formatINR(mtd.income - projected)}
-          hint={`Income ${formatINR(mtd.income, { compact: true })}`}
+          value={formatINR(projectedIncome - projected)}
+          hint={`Projected income ${formatINR(projectedIncome, { compact: true })}`}
           icon={PiggyBank}
-          tone={mtd.income - projected >= 0 ? "success" : "destructive"}
+          tone={projectedIncome - projected >= 0 ? "success" : "destructive"}
         />
       </div>
 
@@ -251,8 +268,8 @@ export function ForecastPage() {
         </div>
         {!hasIntervals && (
           <p className="mt-2 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <Info className="size-3" /> Prediction intervals will be shown when the forecasting
-            model provides them.
+            <Info className="size-3" /> This historical baseline does not estimate prediction
+            intervals.
           </p>
         )}
       </SectionCard>
@@ -317,8 +334,8 @@ export function ForecastPage() {
           ) : (
             <EmptyState
               icon={TrendingUp}
-              title="Category forecasts unavailable"
-              description="Shown when the model returns category-level predictions."
+              title="No recent category spending"
+              description="Category projections appear after expense activity is recorded in the last 30 days."
             />
           )}
         </SectionCard>
@@ -326,7 +343,7 @@ export function ForecastPage() {
         <SectionCard
           title={
             <span className="flex items-center gap-2">
-              <Cpu className="size-4 text-ai" /> Model information
+              <CalendarClock className="size-4 text-ai" /> Baseline details
             </span>
           }
         >
@@ -335,7 +352,7 @@ export function ForecastPage() {
               [
                 "Status",
                 <Badge key="s" variant="ai">
-                  Model output
+                  Historical baseline
                 </Badge>,
               ],
               ["Generated", data.generatedAt.replace("T", " ")],
@@ -355,9 +372,7 @@ export function ForecastPage() {
           <p className="mt-4 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
             {data.explanation}
           </p>
-          <p className="mt-4 text-xs font-semibold text-muted-foreground">
-            Features expected from the model
-          </p>
+          <p className="mt-4 text-xs font-semibold text-muted-foreground">Calculation inputs</p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {data.featuresUsed.map((f) => (
               <span

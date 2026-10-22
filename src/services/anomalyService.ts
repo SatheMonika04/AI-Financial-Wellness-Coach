@@ -1,8 +1,10 @@
-import type { AnomalyReviewStatus, AnomalyRunSummary, Transaction } from "@/types";
+import type { AnomalyReviewStatus, AnomalyResult, AnomalyRunSummary, Transaction } from "@/types";
 import { apiClient, ENDPOINTS } from "./apiClient";
 
 export interface AnomalyService {
-  runDetection(transactions: Transaction[]): Promise<AnomalyRunSummary>;
+  runDetection(
+    transactions: Transaction[],
+  ): Promise<AnomalyRunSummary & { results: (AnomalyResult & { id: string })[] }>;
   updateReview(id: string, status: AnomalyReviewStatus, note?: string): Promise<void>;
 }
 

@@ -15,15 +15,15 @@ import {
 } from "@/components/ui/select";
 import { CategoryBadge, EmptyState, PageIntro, SectionCard } from "@/components/common";
 import { useAppStore } from "@/store/AppStore";
-import { parseCsv } from "@/lib/csv";
-import { ALL_CATEGORIES } from "@/lib/categories";
 import { formatDate, formatINR } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import type { Category, ColumnMapping, ImportCandidate } from "@/types";
+import type { ColumnMapping, ImportCandidate } from "@/types";
+import { transactionService } from "@/services/transactionService";
+import { categorizationService } from "@/services/categorizationService";
 
 const NONE = "__none__";
 const MAX = 10 * 1024 * 1024;
-const STEPS = ["Upload CSV", "Review rows", "Assign categories"];
+const STEPS = ["Upload statement", "Review rows", "Automatic categories"];
 
 function normalizeDate(value: string): string | null {
   const input = value.trim();
@@ -62,12 +62,10 @@ export function UploadPage() {
   const [mapping, setMapping] = useState<ColumnMapping | null>(null);
   const [candidates, setCandidates] = useState<ImportCandidate[]>([]);
   const [done, setDone] = useState<number | null>(null);
+  const [categorizing, setCategorizing] = useState(false);
 
   const chooseFile = (selected: File) => {
-    if (!selected.name.toLowerCase().endsWith(".csv"))
-      return setError(
-        "Choose a CSV file. PDF parsing will be available after backend integration.",
-      );
+    if (!/\.(csv|pdf)$/i.test(selected.name)) return setError("Choose a CSV or PDF statement.");
     if (selected.size > MAX) return setError("File is larger than 10 MB.");
     if (!selected.size) return setError("The file is empty.");
     setError(null);
@@ -77,17 +75,18 @@ export function UploadPage() {
   const processFile = async () => {
     if (!file) return;
     try {
-      const parsed = parseCsv(await file.text());
-      if (parsed.length < 2) throw new Error("The CSV file has no transaction rows.");
-      const [columns, ...data] = parsed;
-      const find = (pattern: RegExp) => columns.find((column) => pattern.test(column)) ?? "";
+      const parsed = await transactionService.parseStatement(file, {
+        existing: state.transactions,
+      });
+      if (parsed.rows.length < 1) throw new Error("The statement has no transaction rows.");
+      const columns = parsed.headers;
       setHeaders(columns);
-      setRows(data);
+      setRows(parsed.rows);
       setMapping({
-        date: find(/date/i) || columns[0] || "",
-        description: find(/narration|description|details|particular|merchant/i) || columns[1] || "",
-        amount: find(/amount|value|debit|withdrawal/i) || columns[2] || "",
-        type: find(/dr\/cr|type|cr\/dr|credit\/debit/i) || undefined,
+        date: parsed.suggestedMapping.date ?? columns[0] ?? "",
+        description: parsed.suggestedMapping.description ?? columns[1] ?? "",
+        amount: parsed.suggestedMapping.amount ?? columns[2] ?? "",
+        type: parsed.suggestedMapping.type ?? undefined,
       });
       setStep(1);
     } catch (cause) {
@@ -115,59 +114,80 @@ export function UploadPage() {
     (row) => !row.date || !row.description || !Number.isFinite(row.amount) || row.amount === 0,
   );
 
-  const makeCandidates = () => {
+  const makeCandidates = async () => {
     const valid = preview.filter(
       (row) => row.date && row.description && Number.isFinite(row.amount) && row.amount > 0,
     );
-    setCandidates(
-      valid.map((row) => {
-        const merchant = merchantFrom(row.description);
-        const duplicate = state.transactions.find(
-          (tx) =>
-            tx.date.slice(0, 10) === row.date!.slice(0, 10) &&
-            tx.amount === Math.round(row.amount) &&
-            tx.description.toLowerCase() === row.description.toLowerCase(),
-        );
-        return {
-          key: row.key,
-          date: row.date!,
-          merchant,
-          description: row.description,
-          amount: Math.round(row.amount),
-          type: row.type,
-          category: null,
-          duplicateOf: duplicate?.id,
-          include: !duplicate,
-        };
-      }),
-    );
+    const items: ImportCandidate[] = valid.map((row) => {
+      const merchant = merchantFrom(row.description);
+      const duplicate = state.transactions.find(
+        (tx) =>
+          tx.date.slice(0, 10) === row.date!.slice(0, 10) &&
+          Math.round(tx.amount * 100) === Math.round(row.amount * 100) &&
+          tx.description.toLowerCase() === row.description.toLowerCase(),
+      );
+      return {
+        key: row.key,
+        date: row.date!,
+        merchant,
+        description: row.description,
+        amount: Math.round(row.amount * 100) / 100,
+        type: row.type,
+        category: null,
+        duplicateOf: duplicate?.id,
+        include: !duplicate,
+      };
+    });
+    setCandidates(items);
     setStep(2);
+    setCategorizing(true);
+    try {
+      const predictions = await categorizationService.categorize(
+        items.map((item) => ({
+          description: item.description,
+          amount: item.amount,
+          type: item.type,
+        })),
+      );
+      setCandidates((current) =>
+        current.map((item, index) => ({
+          ...item,
+          prediction: predictions[index],
+          category: predictions[index]?.predictedCategory ?? "Other",
+        })),
+      );
+    } catch {
+      setCandidates((current) => current.map((item) => ({ ...item, category: "Other" })));
+      toast.info("Automatic categorization was unavailable. Rows were assigned to Other.");
+    } finally {
+      setCategorizing(false);
+    }
   };
 
-  const importRows = () => {
+  const [importing, setImporting] = useState(false);
+  const importRows = async () => {
     const selected = candidates.filter((candidate) => candidate.include && candidate.category);
-    const stamp = Date.now().toString(36);
-    actions.addTransactions(
-      selected.map((candidate, i) => ({
-        id: `import_${stamp}_${i}`,
-        date: candidate.date,
-        merchant: candidate.merchant,
-        description: candidate.description,
-        category: candidate.category as Category,
-        type: candidate.type,
-        amount: candidate.amount,
-        status: "completed" as const,
-        source: "import" as const,
-      })),
-    );
-    setDone(selected.length);
-    toast.success(`Imported ${selected.length} transactions`);
+    setImporting(true);
+    try {
+      const result = await transactionService.importTransactions(selected);
+      actions.addTransactions(result.transactions);
+      setDone(result.importedRows);
+      toast.success(`Imported ${result.importedRows} transactions`);
+      if (result.duplicateRowsSkipped || result.invalidRows)
+        toast.info(
+          `${result.duplicateRowsSkipped} duplicates skipped; ${result.invalidRows} invalid rows rejected.`,
+        );
+    } catch (cause) {
+      const message = cause instanceof Error ? cause.message : "Import failed. Please retry.";
+      setError(message);
+      toast.error(message);
+    } finally {
+      setImporting(false);
+    }
   };
 
-  const update = (key: string, patch: Partial<ImportCandidate>) =>
-    setCandidates((items) =>
-      items.map((item) => (item.key === key ? { ...item, ...patch } : item)),
-    );
+  const setIncluded = (key: string, include: boolean) =>
+    setCandidates((items) => items.map((item) => (item.key === key ? { ...item, include } : item)));
   const included = candidates.filter((candidate) => candidate.include);
   const reset = () => {
     setStep(0);
@@ -184,7 +204,7 @@ export function UploadPage() {
     <div>
       <PageIntro
         title="Upload statements"
-        description="Import transaction rows from a CSV statement. Rows are read in your browser; categories are assigned manually."
+        description="Upload a CSV or supported PDF statement, review extracted rows, and import automatic category suggestions."
       />
       <ol className="mb-6 grid grid-cols-3 gap-2">
         {STEPS.map((label, i) => (
@@ -209,12 +229,12 @@ export function UploadPage() {
             <div>
               <h2 className="font-display text-xl font-semibold">Import complete</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                {done} transaction records were added to this browser.
+                {done} transaction records were saved to your account.
               </p>
             </div>
             <div className="flex gap-2">
               <Button onClick={reset} variant="outline">
-                Import another CSV
+                Import another statement
               </Button>
               <Button
                 onClick={() => {
@@ -241,15 +261,15 @@ export function UploadPage() {
               <UploadCloud className="size-6" />
             </span>
             <div>
-              <p className="font-display font-semibold">Choose a bank statement CSV</p>
+              <p className="font-display font-semibold">Choose a bank statement CSV or PDF</p>
               <p className="text-xs text-muted-foreground">
-                Up to 10 MB. No file is uploaded to a server.
+                Up to 10 MB. The statement is processed for your account.
               </p>
             </div>
             <input
               ref={input}
               type="file"
-              accept=".csv,text/csv"
+              accept=".csv,.pdf,text/csv,application/pdf"
               className="hidden"
               onChange={(event) => event.target.files?.[0] && chooseFile(event.target.files[0])}
             />
@@ -261,7 +281,7 @@ export function UploadPage() {
             <div className="mt-4 flex items-center gap-3 rounded-xl border p-4">
               <FileSpreadsheet className="size-5 text-ai" />
               <span className="min-w-0 flex-1 truncate text-sm font-semibold">{file.name}</span>
-              <Button onClick={processFile}>Read CSV</Button>
+              <Button onClick={processFile}>Read statement</Button>
             </div>
           )}
           {error && (
@@ -272,7 +292,10 @@ export function UploadPage() {
           )}
         </SectionCard>
       ) : step === 1 && mapping ? (
-        <SectionCard title="Review CSV rows" description={`${rows.length} rows from ${file?.name}`}>
+        <SectionCard
+          title="Review statement rows"
+          description={`${rows.length} rows from ${file?.name}`}
+        >
           <div className="mb-5 grid gap-3 sm:grid-cols-4">
             {(["date", "description", "amount", "type"] as const).map((key) => (
               <div key={key} className="space-y-1.5">
@@ -336,15 +359,18 @@ export function UploadPage() {
             <Button variant="ghost" onClick={reset}>
               Back
             </Button>
-            <Button disabled={preview.length === invalid.length} onClick={makeCandidates}>
+            <Button
+              disabled={preview.length === invalid.length}
+              onClick={() => void makeCandidates()}
+            >
               Review categories
             </Button>
           </div>
         </SectionCard>
       ) : (
         <SectionCard
-          title="Assign categories"
-          description="Choose a category for each record. No AI classification is performed."
+          title="Confirm categories"
+          description="Categories are assigned automatically. Low-confidence suggestions are marked for review; you can still import without choosing categories."
         >
           {candidates.length === 0 ? (
             <EmptyState
@@ -370,9 +396,7 @@ export function UploadPage() {
                       <td className="px-3 py-2">
                         <Checkbox
                           checked={candidate.include}
-                          onCheckedChange={(checked) =>
-                            update(candidate.key, { include: !!checked })
-                          }
+                          onCheckedChange={(checked) => setIncluded(candidate.key, !!checked)}
                           aria-label="Import row"
                         />
                       </td>
@@ -384,26 +408,21 @@ export function UploadPage() {
                       </td>
                       <td className="px-3 py-2 text-right">{formatINR(candidate.amount)}</td>
                       <td className="px-3 py-2">
-                        <Select
-                          value={candidate.category ?? NONE}
-                          onValueChange={(value) =>
-                            update(candidate.key, {
-                              category: value === NONE ? null : (value as Category),
-                            })
-                          }
-                        >
-                          <SelectTrigger className="w-40">
-                            <SelectValue placeholder="Choose category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value={NONE}>Choose category</SelectItem>
-                            {ALL_CATEGORIES.map((category) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <CategoryBadge category={candidate.category ?? "Other"} />
+                        {candidate.prediction && (
+                          <p className="mt-1 text-[10px] text-muted-foreground">
+                            {candidate.prediction.needsReview
+                              ? "Auto-assigned · review suggested"
+                              : "Auto-assigned by model"}
+                            : {candidate.prediction.predictedCategory} ·{" "}
+                            {Math.round(candidate.prediction.confidence * 100)}%
+                          </p>
+                        )}
+                        {!candidate.prediction && !categorizing && (
+                          <p className="mt-1 text-[10px] text-muted-foreground">
+                            Fallback category
+                          </p>
+                        )}
                       </td>
                       <td className="px-3 py-2 text-xs">
                         {candidate.duplicateOf ? (
@@ -411,10 +430,8 @@ export function UploadPage() {
                             <Copy className="size-3" />
                             Possible duplicate
                           </span>
-                        ) : !candidate.category ? (
-                          "Choose category"
                         ) : (
-                          <CategoryBadge category={candidate.category} />
+                          <CategoryBadge category={candidate.category ?? "Other"} />
                         )}
                       </td>
                     </tr>
@@ -428,8 +445,8 @@ export function UploadPage() {
               Back
             </Button>
             <Button
-              onClick={importRows}
-              disabled={!included.length || included.some((candidate) => !candidate.category)}
+              onClick={() => void importRows()}
+              disabled={importing || categorizing || !included.length}
             >
               Import {included.length} transactions
             </Button>

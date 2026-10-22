@@ -16,10 +16,34 @@ import { useBudgetRows } from "@/hooks/useFinanceData";
 import { formatINR, formatPct } from "@/lib/format";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
 import { PiggyBank, ReceiptText } from "lucide-react";
+import { budgetService } from "@/services/budgetService";
+import { preferencesService } from "@/services/preferencesService";
+import { useBudgetRecommendations } from "@/hooks/useModels";
 
 export function BudgetsPage() {
   const { state, actions } = useAppStore();
+  const saveBudget = async (category: (typeof EXPENSE_CATEGORIES)[number], amount: number) => {
+    await budgetService.put(category, amount);
+    actions.setBudget(category, amount);
+  };
+  const saveProfile = async (profile: typeof state.profile) => {
+    const result = await preferencesService.save({ profile, settings: state.settings });
+    actions.setProfile(result.profile);
+  };
+  const applyRecommendation = async (
+    category: (typeof EXPENSE_CATEGORIES)[number],
+    amount: number,
+  ) => {
+    try {
+      await saveBudget(category, amount);
+      await recommendationQuery.refetch();
+      toast.success(`${category} limit updated`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not apply this recommendation");
+    }
+  };
   const rows = useBudgetRows("month");
+  const recommendationQuery = useBudgetRecommendations();
   const totalBudget = EXPENSE_CATEGORIES.reduce(
     (sum, category) => sum + (state.budgets[category] ?? 0),
     0,
@@ -68,7 +92,7 @@ export function BudgetsPage() {
 
       <SectionCard
         title="Monthly category limits"
-        description="These limits are saved in this browser. Recommendations are unavailable until a model service is connected."
+        description="Monthly category limits are saved to your account. Model recommendations will be shown when their inference is available."
       >
         {state.transactions.length === 0 && (
           <EmptyState
@@ -83,18 +107,56 @@ export function BudgetsPage() {
               key={row.category}
               row={row}
               initial={state.budgets[row.category] ?? 0}
-              save={(amount) => actions.setBudget(row.category, amount)}
+              save={(amount) => saveBudget(row.category, amount)}
             />
           ))}
         </div>
       </SectionCard>
       <SectionCard
+        title="Model budget recommendations"
+        description="Predictions use the saved budget model and your recent transactions and profile. Review before applying."
+      >
+        {!recommendationQuery.isReady ? (
+          <p className="text-sm text-muted-foreground">
+            Complete monthly income, age, occupation, savings goal, financial goal, credit score,
+            and total debt in Settings to run this model.
+          </p>
+        ) : recommendationQuery.isLoading ? (
+          <div className="h-24 animate-pulse rounded-lg bg-muted" />
+        ) : recommendationQuery.isError ? (
+          <p className="text-sm text-destructive">
+            {recommendationQuery.error?.message ?? "Recommendations could not be loaded."}
+          </p>
+        ) : !recommendationQuery.data?.recommendations.length ? (
+          <p className="text-sm text-muted-foreground">No recommendation results are available.</p>
+        ) : (
+          <div className="divide-y">
+            {recommendationQuery.data.recommendations.map((item) => (
+              <div key={item.category} className="flex flex-wrap items-center gap-3 py-3">
+                <CategoryBadge category={item.category} className="min-w-36" />
+                <p className="min-w-48 flex-1 text-xs text-muted-foreground">{item.explanation}</p>
+                <span className="text-right text-xs">
+                  Suggested <b>{formatINR(item.recommended)}/mo</b>
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => void applyRecommendation(item.category, item.recommended)}
+                >
+                  Apply
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </SectionCard>
+      <SectionCard
         title="Financial profile"
-        description="Profile details are stored locally and are not sent to a recommendation model."
+        description="Your monthly income is saved to your account and used in supported calculations."
       >
         <IncomeEditor
           initial={state.profile.monthlyIncome}
-          save={(monthlyIncome) => actions.setProfile({ ...state.profile, monthlyIncome })}
+          save={(monthlyIncome) => saveProfile({ ...state.profile, monthlyIncome })}
         />
       </SectionCard>
     </div>
@@ -108,7 +170,7 @@ function BudgetRow({
 }: {
   row: ReturnType<typeof useBudgetRows>[number];
   initial: number;
-  save: (amount: number) => void;
+  save: (amount: number) => Promise<void>;
 }) {
   const [value, setValue] = useState(String(initial || ""));
   const [editing, setEditing] = useState(false);
@@ -136,13 +198,17 @@ function BudgetRow({
           />
           <Button
             size="sm"
-            onClick={() => {
+            onClick={async () => {
               const amount = Number(value);
               if (!Number.isFinite(amount) || amount < 0)
                 return toast.error("Enter a valid non-negative limit");
-              save(amount);
-              setEditing(false);
-              toast.success("Monthly limit saved");
+              try {
+                await save(amount);
+                setEditing(false);
+                toast.success("Monthly limit saved");
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : "Could not save this limit");
+              }
             }}
           >
             Save
@@ -168,18 +234,28 @@ function BudgetRow({
   );
 }
 
-function IncomeEditor({ initial, save }: { initial: number; save: (amount: number) => void }) {
+function IncomeEditor({
+  initial,
+  save,
+}: {
+  initial: number;
+  save: (amount: number) => Promise<void>;
+}) {
   const [value, setValue] = useState(String(initial || ""));
   return (
     <form
       className="flex max-w-md items-end gap-2"
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault();
         const amount = Number(value);
         if (!Number.isFinite(amount) || amount < 0)
           return toast.error("Enter a valid non-negative amount");
-        save(amount);
-        toast.success("Monthly income saved");
+        try {
+          await save(amount);
+          toast.success("Monthly income saved");
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : "Could not save income");
+        }
       }}
     >
       <label className="flex-1 space-y-1 text-xs text-muted-foreground">

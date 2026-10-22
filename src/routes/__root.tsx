@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useNavigate,
   useRouterState,
   HeadContent,
   Scripts,
@@ -17,6 +18,7 @@ import { AppStoreProvider } from "@/store/AppStore";
 import { AppLayout } from "@/layouts/AppLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider, useAuth } from "@/auth/AuthContext";
 
 function NotFoundComponent() {
   return (
@@ -127,23 +129,49 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const isPublicRoute = ["/", "/login", "/signup"].includes(pathname);
-
   return (
     <QueryClientProvider client={queryClient}>
-      <AppStoreProvider>
-        {isPublicRoute ? (
-          <PublicLayout>
-            <Outlet />
-          </PublicLayout>
-        ) : (
-          <AppLayout>
-            <Outlet />
-          </AppLayout>
-        )}
-        <Toaster richColors position="bottom-right" />
-      </AppStoreProvider>
+      <AuthProvider>
+        <AppStoreProvider>
+          <RootContent />
+        </AppStoreProvider>
+      </AuthProvider>
     </QueryClientProvider>
+  );
+}
+
+function RootContent() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const navigate = useNavigate();
+  const isPublicRoute = ["/", "/login", "/signup"].includes(pathname);
+  const { status } = useAuth();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!isPublicRoute && status === "unauthenticated") {
+      sessionStorage.setItem("auth_redirect", pathname);
+      void navigate({ to: "/login" });
+    } else if ((pathname === "/login" || pathname === "/signup") && status === "authenticated") {
+      void navigate({ to: "/overview" });
+    }
+  }, [isPublicRoute, navigate, pathname, status]);
+
+  return (
+    <>
+      {status === "loading" || (!isPublicRoute && status === "unauthenticated") ? (
+        <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">
+          Checking your session…
+        </div>
+      ) : isPublicRoute ? (
+        <PublicLayout>
+          <Outlet />
+        </PublicLayout>
+      ) : (
+        <AppLayout>
+          <Outlet />
+        </AppLayout>
+      )}
+      <Toaster richColors position="bottom-right" />
+    </>
   );
 }

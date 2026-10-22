@@ -1,7 +1,7 @@
-from sqlalchemy import create_engine , text
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -17,14 +17,6 @@ engine = create_engine(
     pool_size=5,
     max_overflow=10,
 )
-
-try:
-    with engine.connect() as connection:
-        # Run a simple query to confirm the connection works
-        result = connection.execute(text("SELECT current_user;"))
-        print(f"Successfully connected! Current user: {result.scalar()}")
-except Exception as e:
-    print(f"Connection failed: {e}")
 
 SessionLocal = sessionmaker(
     autocommit=False,

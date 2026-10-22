@@ -59,6 +59,7 @@ import { useAppStore } from "@/store/AppStore";
 import { formatINR, formatPct } from "@/lib/format";
 import { TODAY } from "@/lib/period";
 import type { FinancialGoal, GoalType } from "@/types";
+import { goalService } from "@/services/goalService";
 
 const TYPES: { v: GoalType; l: string; icon: typeof Target }[] = [
   { v: "emergency", l: "Emergency fund", icon: ShieldCheck },
@@ -103,8 +104,12 @@ export function GoalsPage() {
       completed: !g.completed,
       currentAmount: !g.completed ? g.targetAmount : g.currentAmount,
     };
-    actions.upsertGoal(next);
-    toast.success(next.completed ? `🎉 "${g.name}" completed` : `"${g.name}" reopened`);
+    try {
+      actions.upsertGoal(await goalService.update(next));
+      toast.success(next.completed ? `🎉 "${g.name}" completed` : `"${g.name}" reopened`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not update this goal");
+    }
   };
 
   return (
@@ -255,11 +260,18 @@ export function GoalsPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => {
+              onClick={async () => {
                 if (!deleting) return;
-                actions.removeGoal(deleting.id);
-                toast.success("Goal removed");
-                setDeleting(null);
+                try {
+                  await goalService.remove(deleting.id);
+                  actions.removeGoal(deleting.id);
+                  toast.success("Goal removed");
+                  setDeleting(null);
+                } catch (error) {
+                  toast.error(
+                    error instanceof Error ? error.message : "Could not remove this goal",
+                  );
+                }
               }}
             >
               Remove
@@ -293,7 +305,7 @@ function GoalDialog({
       : { name: "", type: "savings", targetAmount: 0, currentAmount: 0, targetDate: "" },
   });
   const e = form.formState.errors;
-  const submit = (v: Form) => {
+  const submit = async (v: Form) => {
     const next: FinancialGoal = g
       ? { ...g, ...v, completed: v.currentAmount >= v.targetAmount }
       : {
@@ -302,9 +314,14 @@ function GoalDialog({
           completed: v.currentAmount >= v.targetAmount,
           createdAt: format(TODAY, "yyyy-MM-dd"),
         };
-    actions.upsertGoal(next);
-    toast.success(g ? "Goal updated" : "Goal created");
-    onClose();
+    try {
+      const saved = g ? await goalService.update(next) : await goalService.create(next);
+      actions.upsertGoal(saved);
+      toast.success(g ? "Goal updated" : "Goal created");
+      onClose();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not save this goal");
+    }
   };
   return (
     <Dialog open={!!goal} onOpenChange={(o) => !o && onClose()}>

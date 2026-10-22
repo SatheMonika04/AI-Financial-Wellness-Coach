@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import csv
 import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -20,7 +21,7 @@ import pandas as pd
 from src.pdf_processing.pipeline import process_bank_statement_to_dataframe
 
 
-MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "expense_classifier_pipeline_v3.pkl"
+MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "expense_classifier_pipeline_v6.pkl"
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 OUTPUT_COLUMNS = ("transaction_text", "amount", "payment_method", "transaction_type")
 DEFAULT_INPUT_CSV = PROJECT_ROOT / "Test Assets" / "PhonePe_Statement_Aug2025_Aug2026.csv"
@@ -29,6 +30,11 @@ DEFAULT_OUTPUT_CSV = PROJECT_ROOT / "data" / "output" / "PhonePe_Statement_Aug20
 LOW_CONFIDENCE_THRESHOLD = 0.6
 
 _ACCOUNT_LABEL_PATTERN = re.compile(r"(paid by|credited to|debited from|xxxx)", re.IGNORECASE)
+
+
+@lru_cache(maxsize=4)
+def _load_cached_model(model_path: str):
+    return joblib.load(model_path)
 ALIASES = {
     "transaction_text": (
         "transaction_text", "transaction details", "transaction detail", "description",
@@ -177,7 +183,7 @@ def categorize_dataframe(
     silently masquerades as a confident categorization downstream.
     """
     features = _prepare_features(data)
-    model = joblib.load(model_path)
+    model = _load_cached_model(str(Path(model_path).resolve()))
     result = data.copy()
     predictions = pd.Series(model.predict(features), index=data.index)
     result["predicted_category"] = predictions

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -13,18 +13,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import workspaceImage from "@/assets/welcome-workspace.jpg";
+import { apiClient, ApiError, ENDPOINTS } from "@/services/apiClient";
+import { useAuth } from "@/auth/AuthContext";
 
 export function AccountPage({ mode }: { mode: "login" | "signup" }) {
   const signup = mode === "signup";
   const [showPassword, setShowPassword] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const auth = useAuth();
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const name = String(form.get("name") ?? "").trim();
-    const email = String(form.get("email") ?? "").trim();
+    const email = String(form.get("email") ?? "")
+      .trim()
+      .toLowerCase();
     const password = String(form.get("password") ?? "");
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -44,8 +52,32 @@ export function AccountPage({ mode }: { mode: "login" | "signup" }) {
     }
 
     setError(null);
-    setSubmitted(true);
-    event.currentTarget.reset();
+    setLoading(true);
+    try {
+      if (signup) {
+        await apiClient.post(ENDPOINTS.signup, { name, email, password });
+        setSubmitted(true);
+        formElement.reset();
+      } else {
+        await auth.login(email, password);
+        const requested = sessionStorage.getItem("auth_redirect");
+        sessionStorage.removeItem("auth_redirect");
+        if (requested?.startsWith("/") && !requested.startsWith("/login")) {
+          await navigate({ to: requested as never });
+        } else {
+          await navigate({ to: "/overview" });
+        }
+      }
+    } catch (err) {
+      const apiError = err instanceof ApiError ? err : null;
+      setError(
+        apiError?.status === 401
+          ? "Email or password is incorrect."
+          : (apiError?.message ?? "Could not complete your request. Please try again."),
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -92,17 +124,15 @@ export function AccountPage({ mode }: { mode: "login" | "signup" }) {
           {submitted ? (
             <div className="mt-8 space-y-5" role="status">
               <div className="rounded-xl border border-border bg-muted/40 p-4 text-left">
-                <h2 className="text-lg font-semibold text-foreground">
-                  Authentication is not configured yet
-                </h2>
+                <h2 className="text-lg font-semibold text-foreground">Account created</h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  This form is a frontend preview only. No account was created and no details were
-                  saved because a real authentication backend is not connected.
+                  Your account was created successfully. You can now log in with your email and
+                  password.
                 </p>
               </div>
               <Button asChild className="w-full">
-                <Link to="/overview">
-                  Open the financial workspace <ArrowRight />
+                <Link to="/login">
+                  Continue to log in <ArrowRight />
                 </Link>
               </Button>
               <Button variant="ghost" className="w-full" onClick={() => setSubmitted(false)}>
@@ -159,13 +189,10 @@ export function AccountPage({ mode }: { mode: "login" | "signup" }) {
                 </div>
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button type="submit" size="lg" className="w-full">
-                {signup ? "Create account" : "Log in"}
+              <Button type="submit" size="lg" className="w-full" disabled={loading}>
+                {loading ? "Please wait…" : signup ? "Create account" : "Log in"}
                 <ArrowRight />
               </Button>
-              <p className="text-center text-xs leading-5 text-muted-foreground">
-                Preview only — authentication will be connected when the backend is ready.
-              </p>
             </form>
           )}
           <div className="mt-7 border-t pt-6 text-center text-sm text-muted-foreground">
@@ -176,8 +203,8 @@ export function AccountPage({ mode }: { mode: "login" | "signup" }) {
           </div>
           <div className="mt-5 text-center">
             <Button asChild variant="ghost" size="sm">
-              <Link to="/overview">
-                Explore without an account <ArrowUpRight />
+              <Link to="/login">
+                Log in to explore your workspace <ArrowUpRight />
               </Link>
             </Button>
           </div>

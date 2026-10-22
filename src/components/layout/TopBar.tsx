@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { AlertTriangle, Bell, CalendarRange, Settings, Wallet } from "lucide-react";
+import { AlertTriangle, Bell, CalendarRange, LogOut, Settings, Wallet } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -25,6 +25,7 @@ import { useAppStore } from "@/store/AppStore";
 import { useNotifications } from "@/hooks/useFinanceData";
 import { PERIOD_OPTIONS } from "@/lib/period";
 import type { PeriodKey } from "@/types";
+import { useAuth } from "@/auth/AuthContext";
 
 export function PeriodSelect() {
   const { state, actions } = useAppStore();
@@ -120,6 +121,7 @@ export function TopBar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const item = NAV_ITEMS.find((i) => path.startsWith(i.url));
   const { state } = useAppStore();
+  const auth = useAuth();
 
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur sm:px-6">
@@ -154,21 +156,29 @@ export function TopBar() {
             >
               <Avatar className="size-9">
                 <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
-                  {initials(state.profile.name)}
+                  {initials(auth.user?.name || state.profile.name)}
                 </AvatarFallback>
               </Avatar>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
-              <p className="text-sm font-semibold">{state.profile.name || "Profile not set"}</p>
-              <p className="text-xs font-normal text-muted-foreground">{state.profile.email}</p>
+              <p className="text-sm font-semibold">
+                {auth.user?.name || state.profile.name || "Profile not set"}
+              </p>
+              <p className="text-xs font-normal text-muted-foreground">
+                {auth.user?.email || state.profile.email}
+              </p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link to="/settings">
                 <Settings /> Settings
               </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => void auth.logout()}>
+              <LogOut /> Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

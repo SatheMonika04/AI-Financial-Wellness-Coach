@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -164,6 +165,7 @@ def generate_features(
     return pd.concat([data.reset_index(drop=True), feature_frame], axis=1), history
 
 
+@lru_cache(maxsize=4)
 def _load_artifacts(artifact_dir: Path) -> tuple[dict[str, Any], Any, Any, dict[str, Any]]:
     preprocessing_path = artifact_dir / "preprocessing.joblib"
     model_path = artifact_dir / "isolation_forest.joblib"

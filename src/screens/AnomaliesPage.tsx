@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { AlertOctagon, Check, Eye, Radar, ShieldCheck, X } from "lucide-react";
+import { AlertOctagon, Check, Eye, Radar, ShieldCheck, X, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,12 +32,31 @@ import { TransactionDetailSheet } from "@/components/transactions/TransactionDet
 import { useAppStore } from "@/store/AppStore";
 import { formatDate, formatINR } from "@/lib/format";
 import type { AnomalyReviewStatus } from "@/types";
+import { anomalyService } from "@/services/anomalyService";
 
 export function AnomaliesPage() {
   const { state, actions } = useAppStore();
   const [severity, setSeverity] = useState("all");
   const [status, setStatus] = useState("all");
   const [openTx, setOpenTx] = useState<string | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+
+  const analyze = async () => {
+    if (!state.transactions.length)
+      return toast.info("Import transactions before running analysis.");
+    setAnalyzing(true);
+    try {
+      const result = await anomalyService.runDetection(state.transactions);
+      result.results.forEach(({ id, ...anomaly }) => actions.setAnomaly(id, anomaly));
+      toast.success(
+        `Analyzed ${result.analyzed} transactions; ${result.flagged} flagged for review.`,
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Anomaly analysis is unavailable");
+    } finally {
+      setAnalyzing(false);
+    }
+  };
 
   const flagged = useMemo(
     () => state.transactions.filter((t) => t.anomaly?.flagged),
@@ -62,9 +81,14 @@ export function AnomaliesPage() {
       .map(([label, count]) => ({ label, count }));
   }, [flagged]);
 
-  const quick = (id: string, s: AnomalyReviewStatus) => {
-    actions.reviewAnomaly(id, s);
-    toast.success(s === "reviewed" ? "Marked as reviewed" : "Alert dismissed");
+  const quick = async (id: string, s: AnomalyReviewStatus) => {
+    try {
+      await anomalyService.updateReview(id, s);
+      actions.reviewAnomaly(id, s);
+      toast.success(s === "reviewed" ? "Marked as reviewed" : "Alert dismissed");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not save the review");
+    }
   };
 
   if (!state.hydrated)
@@ -79,6 +103,20 @@ export function AnomaliesPage() {
         <PageIntro
           title="Unusual transactions"
           description="Anomaly results will appear when transaction data has been analyzed."
+          actions={
+            <Button
+              onClick={() => void analyze()}
+              disabled={analyzing || !state.transactions.length}
+            >
+              {analyzing ? (
+                "Analyzing…"
+              ) : (
+                <>
+                  <RefreshCw /> Analyze transactions
+                </>
+              )}
+            </Button>
+          }
         />
         <SectionCard>
           <EmptyState
@@ -95,6 +133,17 @@ export function AnomaliesPage() {
       <PageIntro
         title="Unusual transactions"
         description="Transactions identified by connected anomaly analysis. Unusual does not mean fraud; review results carefully."
+        actions={
+          <Button onClick={() => void analyze()} disabled={analyzing}>
+            {analyzing ? (
+              "Analyzing…"
+            ) : (
+              <>
+                <RefreshCw /> Run analysis
+              </>
+            )}
+          </Button>
+        }
       />
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <KpiCard label="Flagged transactions" value={flagged.length} icon={Radar} />

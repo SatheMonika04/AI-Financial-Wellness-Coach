@@ -22,24 +22,48 @@ import { PageIntro, SectionCard } from "@/components/common";
 import { useAppStore } from "@/store/AppStore";
 import { downloadText, transactionsToCsv } from "@/lib/csv";
 import type { AppSettings } from "@/types";
+import { preferencesService } from "@/services/preferencesService";
+import { useAuth } from "@/auth/AuthContext";
 
 const profileSchema = z.object({
   name: z.string().trim().max(60),
   email: z.union([z.literal(""), z.string().email("Enter a valid email")]),
   city: z.string().max(40).optional(),
+  age: z.union([z.coerce.number().int().min(18).max(120), z.literal("")]).optional(),
+  occupation: z.string().max(60).optional(),
+  savingsGoal: z.union([z.coerce.number().min(0), z.literal("")]).optional(),
+  financialGoal: z.string().max(120).optional(),
+  creditScore: z.union([z.coerce.number().int().min(0).max(1000), z.literal("")]).optional(),
+  totalDebt: z.union([z.coerce.number().min(0), z.literal("")]).optional(),
 });
 
 export function SettingsPage() {
   const { state, actions } = useAppStore();
+  const { refresh } = useAuth();
   const settings = state.settings;
-  const setSettings = (patch: Partial<AppSettings>) =>
-    actions.setSettings({ ...settings, ...patch });
+  const setSettings = async (patch: Partial<AppSettings>) => {
+    try {
+      const result = await preferencesService.save({
+        profile: state.profile,
+        settings: { ...settings, ...patch },
+      });
+      actions.setSettings(result.settings);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not save preferences");
+    }
+  };
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     values: {
       name: state.profile.name,
       email: state.profile.email,
       city: state.profile.city ?? "",
+      age: state.profile.age ?? "",
+      occupation: state.profile.occupation ?? "",
+      savingsGoal: state.profile.savingsGoal ?? "",
+      financialGoal: state.profile.financialGoal ?? "",
+      creditScore: state.profile.creditScore ?? "",
+      totalDebt: state.profile.totalDebt ?? "",
     },
   });
 
@@ -50,17 +74,54 @@ export function SettingsPage() {
         <SectionCard title="Profile">
           <form
             className="space-y-3"
-            onSubmit={form.handleSubmit((v) => {
-              actions.setProfile({ ...state.profile, ...v });
-              toast.success("Profile saved");
+            onSubmit={form.handleSubmit(async (v) => {
+              try {
+                const profile = {
+                  ...state.profile,
+                  ...v,
+                  age: v.age === "" ? undefined : v.age,
+                  savingsGoal: v.savingsGoal === "" ? undefined : v.savingsGoal,
+                  creditScore: v.creditScore === "" ? undefined : v.creditScore,
+                  totalDebt: v.totalDebt === "" ? undefined : v.totalDebt,
+                };
+                const result = await preferencesService.save({
+                  profile,
+                  settings: state.settings,
+                });
+                actions.setProfile(result.profile);
+                await refresh();
+                toast.success("Profile saved");
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : "Could not save profile");
+              }
             })}
           >
-            {(["name", "email", "city"] as const).map((key) => (
+            {(
+              [
+                "name",
+                "email",
+                "city",
+                "age",
+                "occupation",
+                "savingsGoal",
+                "financialGoal",
+                "creditScore",
+                "totalDebt",
+              ] as const
+            ).map((key) => (
               <div key={key} className="space-y-1">
                 <Label htmlFor={key} className="capitalize">
-                  {key}
+                  {key.replace(/([A-Z])/g, " $1")}
                 </Label>
-                <Input id={key} {...form.register(key)} />
+                <Input
+                  id={key}
+                  type={
+                    ["age", "savingsGoal", "creditScore", "totalDebt"].includes(key)
+                      ? "number"
+                      : "text"
+                  }
+                  {...form.register(key)}
+                />
                 {form.formState.errors[key] && (
                   <p className="text-xs text-destructive">{form.formState.errors[key]?.message}</p>
                 )}
@@ -80,20 +141,20 @@ export function SettingsPage() {
             </div>
             <Switch
               checked={settings.theme === "dark"}
-              onCheckedChange={(dark) => setSettings({ theme: dark ? "dark" : "light" })}
+              onCheckedChange={(dark) => void setSettings({ theme: dark ? "dark" : "light" })}
             />
           </div>
           <div className="flex items-center justify-between gap-4 py-3">
             <div>
-              <p className="text-sm font-medium">Save data in this browser</p>
+              <p className="text-sm font-medium">Save preferences in this browser</p>
               <p className="text-xs text-muted-foreground">
-                Keep imported records and preferences on this device
+                Keep display and period preferences on this device
               </p>
             </div>
             <Switch
               checked={settings.privacy.persistLocally}
               onCheckedChange={(persistLocally) =>
-                setSettings({ privacy: { ...settings.privacy, persistLocally } })
+                void setSettings({ privacy: { ...settings.privacy, persistLocally } })
               }
             />
           </div>
@@ -105,7 +166,7 @@ export function SettingsPage() {
 
         <SectionCard
           title="Local data"
-          description={`${state.transactions.length} transaction records`}
+          description={`${state.transactions.length} account transaction records`}
         >
           <div className="flex flex-wrap gap-2">
             <Button
@@ -127,8 +188,8 @@ export function SettingsPage() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Clear local data?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Transactions, goals, budgets and profile details saved in this browser will be
-                    removed.
+                    This clears the browser's cached preferences. Transactions, goals, budgets, and
+                    profile details saved to your account remain available after reload.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -136,7 +197,8 @@ export function SettingsPage() {
                   <AlertDialogAction
                     onClick={() => {
                       actions.clearData();
-                      toast.success("Local data cleared");
+                      toast.success("Browser state cleared");
+                      window.location.reload();
                     }}
                   >
                     Clear data
@@ -149,7 +211,7 @@ export function SettingsPage() {
 
         <SectionCard
           title="Backend integration"
-          description="Bank connections, model results and account sync will be added in a future integration task."
+          description="External bank connections are not configured. Transaction, budget, goal, profile, and preference data sync through your account."
         >
           <p className="text-sm text-muted-foreground">No external data sources are connected.</p>
         </SectionCard>

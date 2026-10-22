@@ -1,8 +1,8 @@
-import type { ForecastRequest, ForecastResponse } from "@/types";
+import type { ForecastResponse } from "@/types";
 import { apiClient, ENDPOINTS } from "./apiClient";
 
 export interface ForecastService {
-  getForecast(req: ForecastRequest): Promise<ForecastResponse>;
+  getForecast(req: { horizonDays: number }): Promise<ForecastResponse>;
 }
 
 const http: ForecastService = {

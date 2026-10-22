@@ -13,6 +13,12 @@ import type {
 import { DEFAULT_SETTINGS } from "@/lib/defaults";
 import { storage } from "@/lib/storage";
 import { TODAY } from "@/lib/period";
+import { useAuth } from "@/auth/AuthContext";
+import { transactionService } from "@/services/transactionService";
+import { toast } from "sonner";
+import { budgetService } from "@/services/budgetService";
+import { goalService } from "@/services/goalService";
+import { preferencesService } from "@/services/preferencesService";
 
 export interface AppState {
   hydrated: boolean;
@@ -31,6 +37,7 @@ type Persisted = Omit<AppState, "hydrated">;
 type Action =
   | { type: "hydrate"; payload: Partial<Persisted> }
   | { type: "updateTransaction"; id: string; patch: Partial<Transaction> }
+  | { type: "setAnomaly"; id: string; anomaly: NonNullable<Transaction["anomaly"]> }
   | { type: "addTransactions"; items: Transaction[] }
   | { type: "reviewAnomaly"; id: string; status: AnomalyReviewStatus; note?: string }
   | { type: "setBudget"; category: BudgetCategory; amount: number }
@@ -65,6 +72,13 @@ function reducer(state: AppState, a: Action): AppState {
       return {
         ...state,
         transactions: state.transactions.map((t) => (t.id === a.id ? { ...t, ...a.patch } : t)),
+      };
+    case "setAnomaly":
+      return {
+        ...state,
+        transactions: state.transactions.map((transaction) =>
+          transaction.id === a.id ? { ...transaction, anomaly: a.anomaly } : transaction,
+        ),
       };
     case "addTransactions":
       return {
@@ -128,6 +142,8 @@ function useActions(dispatch: React.Dispatch<Action>) {
     () => ({
       updateTransaction: (id: string, patch: Partial<Transaction>) =>
         dispatch({ type: "updateTransaction", id, patch }),
+      setAnomaly: (id: string, anomaly: NonNullable<Transaction["anomaly"]>) =>
+        dispatch({ type: "setAnomaly", id, anomaly }),
       addTransactions: (items: Transaction[]) => dispatch({ type: "addTransactions", items }),
       reviewAnomaly: (id: string, status: AnomalyReviewStatus, note?: string) =>
         dispatch({ type: "reviewAnomaly", id, status, note }),
@@ -153,17 +169,73 @@ const AppStoreContext = createContext<Ctx | null>(null);
 export function AppStoreProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, () => createInitial());
   const actions = useActions(dispatch);
+  const { status, user } = useAuth();
 
   useEffect(() => {
-    const saved = storage.get<Partial<Persisted>>(KEY);
+    const saved = storage.get<Pick<Persisted, "settings" | "period">>(KEY);
     dispatch({ type: "hydrate", payload: saved ?? {} });
   }, []);
 
   useEffect(() => {
+    let active = true;
+    if (status === "authenticated" && user) {
+      dispatch({
+        type: "hydrate",
+        payload: { profile: { name: user.name, email: user.email, monthlyIncome: 0 } },
+      });
+      void transactionService
+        .list()
+        .then(({ items }) => {
+          if (active) dispatch({ type: "hydrate", payload: { transactions: items } });
+        })
+        .catch(() => {
+          if (active) {
+            dispatch({ type: "hydrate", payload: { transactions: [] } });
+            toast.error(
+              "Saved transactions could not be loaded. Check your connection and refresh.",
+            );
+          }
+        });
+      void budgetService
+        .list()
+        .then((items) => {
+          if (active)
+            dispatch({
+              type: "hydrate",
+              payload: {
+                budgets: Object.fromEntries(
+                  items.map((item) => [item.category, item.monthlyLimit]),
+                ) as Record<BudgetCategory, number>,
+              },
+            });
+        })
+        .catch(() => active && toast.error("Saved budgets could not be loaded."));
+      void goalService
+        .list()
+        .then((goals) => {
+          if (active) dispatch({ type: "hydrate", payload: { goals } });
+        })
+        .catch(() => active && toast.error("Savings goals could not be loaded."));
+      void preferencesService
+        .get()
+        .then((preferences) => {
+          if (active) dispatch({ type: "hydrate", payload: preferences });
+        })
+        .catch(() => active && toast.error("Saved profile and preferences could not be loaded."));
+    } else if (status === "unauthenticated") {
+      dispatch({ type: "reset" });
+    }
+    return () => {
+      active = false;
+    };
+  }, [status, user]);
+
+  useEffect(() => {
     if (!state.hydrated) return;
     const { hydrated: _h, ...rest } = state;
-    if (state.settings.privacy.persistLocally) storage.set(KEY, rest);
-    else storage.clearAll();
+    if (state.settings.privacy.persistLocally) {
+      storage.set(KEY, { settings: rest.settings, period: rest.period });
+    } else storage.clearAll();
   }, [state]);
 
   useEffect(() => {

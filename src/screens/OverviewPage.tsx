@@ -27,6 +27,7 @@ import {
   Wallet,
   ReceiptText,
   Percent,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -87,6 +88,8 @@ export function OverviewPage() {
   const budgetTotal = rows.reduce((s, r) => s + r.budget, 0);
   const budgetSpent = rows.reduce((s, r) => s + r.spent, 0);
   const utilization = budgetTotal ? budgetSpent / budgetTotal : null;
+  const analyzedTransactions = current.filter((transaction) => transaction.anomaly != null).length;
+  const unusualTransactions = current.filter((transaction) => transaction.anomaly?.flagged).length;
   const recent = state.transactions.slice(0, 7);
   const firstName = state.profile.name.split(" ")[0];
 
@@ -220,10 +223,14 @@ export function OverviewPage() {
         />
         <KpiCard
           label="Unusual transactions"
-          value="—"
+          value={String(unusualTransactions)}
           icon={AlertTriangle}
-          tone="ai"
-          hint="Anomaly analysis unavailable"
+          tone={unusualTransactions ? "warning" : "ai"}
+          hint={
+            analyzedTransactions
+              ? `${analyzedTransactions} analyzed in this period`
+              : "Run analysis to check this period"
+          }
         />
       </div>
       <p className="-mt-3 text-[11px] text-muted-foreground">Changes shown {range.compareLabel}.</p>
@@ -540,7 +547,7 @@ export function OverviewPage() {
 
 function OutlookCard() {
   const { state } = useAppStore();
-  const { data, isLoading } = useForecast(30);
+  const { data, isLoading, error } = useForecast(30);
   const monthStart = startOfMonth(TODAY);
   const mtd = totals(inRange(state.transactions, monthStart, TODAY));
   const monthEnd = format(endOfMonth(TODAY), "yyyy-MM-dd");
@@ -565,8 +572,11 @@ function OutlookCard() {
       ) : rest == null ? (
         <EmptyState
           icon={TrendingUp}
-          title="Forecasts aren’t available yet"
-          description="Forecasts will appear when the required financial data and model are available."
+          title={error ? "Outlook unavailable" : "Forecasts aren’t available yet"}
+          description={
+            error?.message ??
+            "Add at least 30 days of expense history to calculate a spending baseline."
+          }
         />
       ) : (
         <div className="space-y-3">

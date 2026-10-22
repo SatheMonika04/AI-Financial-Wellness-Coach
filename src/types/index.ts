@@ -20,7 +20,7 @@ export type TransactionType = "income" | "expense";
 export type PaymentMethod =
   "UPI" | "Credit Card" | "Debit Card" | "Net Banking" | "Cash" | "Auto Debit";
 export type TransactionStatus = "completed" | "pending" | "failed";
-export type DataSource = "model";
+export type DataSource = "model" | "calculation";
 
 /** Output of the expense categorization pipeline. */
 export interface CategoryPrediction {
@@ -83,7 +83,7 @@ export interface ColumnMapping {
 
 export interface StatementParseResult {
   fileName: string;
-  fileType: "csv";
+  fileType: "csv" | "pdf";
   headers: string[];
   rows: string[][];
   suggestedMapping: ColumnMapping;
@@ -97,6 +97,7 @@ export interface ImportCandidate {
   amount: number;
   type: TransactionType;
   category: Category | null;
+  prediction?: CategoryPrediction;
   duplicateOf?: string;
   include: boolean;
 }
@@ -126,7 +127,7 @@ export interface BudgetModelFeatures {
 }
 
 export interface BudgetRecommendation {
-  category: BudgetCategory;
+  category: ExpenseCategory;
   actual: number;
   current: number;
   recommended: number;

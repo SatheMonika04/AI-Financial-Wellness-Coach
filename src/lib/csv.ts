@@ -61,7 +61,7 @@ export function transactionsToCsv(txs: Transaction[]) {
       t.prediction?.confidence.toFixed(2) ?? "",
       t.anomaly?.flagged ? t.anomaly.reviewStatus : "",
     ]
-      .map(esc)
+      .map((value) => esc(value ?? ""))
       .join(","),
   );
   return [header.join(","), ...lines].join("\n");

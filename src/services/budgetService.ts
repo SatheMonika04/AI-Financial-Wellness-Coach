@@ -1,23 +1,18 @@
-import type {
-  BudgetCategory,
-  BudgetModelFeatures,
-  BudgetRecommendationResponse,
-  FinancialProfile,
-} from "@/types";
+import type { BudgetCategory, BudgetRecommendationResponse } from "@/types";
 import { apiClient, ENDPOINTS } from "./apiClient";
 
-export interface BudgetRecommendationRequest {
-  profile: FinancialProfile;
-  features: BudgetModelFeatures;
-  currentBudgets: Record<BudgetCategory, number>;
-}
-
 export interface BudgetService {
-  getRecommendations(req: BudgetRecommendationRequest): Promise<BudgetRecommendationResponse>;
+  list(): Promise<{ category: BudgetCategory; monthlyLimit: number }[]>;
+  put(category: BudgetCategory, monthlyLimit: number): Promise<unknown>;
+  remove(category: BudgetCategory): Promise<void>;
+  getRecommendations(): Promise<BudgetRecommendationResponse>;
 }
 
 const http: BudgetService = {
-  getRecommendations: (req) => apiClient.post(ENDPOINTS.budgetRecommendations, req),
+  list: () => apiClient.get(ENDPOINTS.budgets),
+  put: (category, monthlyLimit) => apiClient.put(ENDPOINTS.budget(category), { monthlyLimit }),
+  remove: (category) => apiClient.delete(ENDPOINTS.budget(category)),
+  getRecommendations: () => apiClient.get(ENDPOINTS.budgetRecommendations),
 };
 
 export const budgetService = http;

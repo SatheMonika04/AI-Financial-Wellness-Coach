@@ -5,4 +5,14 @@ pytest
 numpy
 scikit-learn
 joblib
+fastapi
+python-multipart
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+python-dotenv
+bcrypt
+email-validator
+httpx
+itsdangerous
 

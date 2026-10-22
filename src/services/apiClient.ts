@@ -1,4 +1,4 @@
-// HTTP client boundary for a future backend integration. No request runs until a service is used.
+// Shared HTTP client for the FastAPI backend.
 
 const env = import.meta.env as Record<string, string | undefined>;
 
@@ -32,6 +32,7 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
       method: opts.method ?? "GET",
       headers: opts.formData ? undefined : { "Content-Type": "application/json" },
       body: opts.formData ?? (opts.body !== undefined ? JSON.stringify(opts.body) : undefined),
+      credentials: "include",
       signal: opts.signal ?? controller.signal,
     });
     const data = res.headers.get("content-type")?.includes("json")
@@ -40,20 +41,38 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
     if (!res.ok)
       throw new ApiError(
         typeof data === "object" && data && "detail" in data
-          ? String((data as { detail: unknown }).detail)
+          ? formatApiDetail((data as { detail: unknown }).detail)
           : res.statusText,
         res.status,
         data,
       );
     return data as T;
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    if (error instanceof DOMException && error.name === "AbortError")
+      throw new ApiError("The request timed out. Please try again.", 0);
+    throw new ApiError("Could not reach the server. Please try again.", 0);
   } finally {
     clearTimeout(timer);
   }
 }
 
+function formatApiDetail(detail: unknown): string {
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) =>
+        typeof item === "object" && item && "msg" in item ? String(item.msg) : "Invalid input",
+      )
+      .join(" ");
+  }
+  return "The request could not be completed.";
+}
+
 export const apiClient = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, body?: unknown) => request<T>(path, { method: "POST", body }),
+  put: <T>(path: string, body?: unknown) => request<T>(path, { method: "PUT", body }),
   patch: <T>(path: string, body?: unknown) => request<T>(path, { method: "PATCH", body }),
   delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
   upload: <T>(path: string, formData: FormData) => request<T>(path, { method: "POST", formData }),
@@ -61,16 +80,24 @@ export const apiClient = {
 
 /** Centralised endpoint paths — adjust once the FastAPI routes are final. */
 export const ENDPOINTS = {
-  transactions: "/transactions",
-  transaction: (id: string) => `/transactions/${id}`,
-  uploadStatement: "/statements/upload",
-  importTransactions: "/transactions/import",
-  categorize: "/ml/categorize",
-  budgetRecommendations: "/ml/budget-recommendations",
-  forecast: "/ml/forecast",
-  anomalies: "/ml/anomalies",
-  anomalyReview: (id: string) => `/ml/anomalies/${id}/review`,
-  wellness: "/wellness/score",
-  goals: "/goals",
-  goal: (id: string) => `/goals/${id}`,
+  signup: "/api/auth/signup",
+  login: "/api/auth/login",
+  me: "/api/auth/me",
+  logout: "/api/auth/logout",
+  transactions: "/api/transactions",
+  transaction: (id: string) => `/api/transactions/${id}`,
+  uploadStatement: "/api/statements/upload",
+  importTransactions: "/api/transactions/import",
+  dashboardSummary: "/api/dashboard/summary",
+  budgets: "/api/budgets",
+  budget: (category: string) => `/api/budgets/${encodeURIComponent(category)}`,
+  goals: "/api/goals",
+  goal: (id: string) => `/api/goals/${id}`,
+  preferences: "/api/preferences",
+  categorize: "/api/ml/categorize",
+  budgetRecommendations: "/api/ml/budget-recommendations",
+  forecast: "/api/ml/forecast",
+  anomalies: "/api/ml/anomalies",
+  anomalyReview: (id: string) => `/api/ml/anomalies/${id}/review`,
+  wellness: "/api/wellness/score",
 };
